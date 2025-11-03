@@ -14,6 +14,7 @@ A comprehensive hospital management system built with Laravel 11, featuring role
 
 ### 🔐 Authentication & Authorization
 - Secure login/registration system
+- **Facebook Social Login** integration
 - Role-based access control
 - Password hashing and validation
 - Session management
@@ -76,22 +77,63 @@ A comprehensive hospital management system built with Laravel 11, featuring role
    ```
 
 4. **Database configuration**
-   - Update `.env` file with your database credentials
-   - For SQLite (default): Database file will be created automatically
-   - For MySQL: Create a database and update `.env` accordingly
+   
+   **Option A: SQLite (Default - Easiest)**
+   - The database file will be created automatically at `database/database.sqlite`
+   - No additional configuration needed!
+   
+   **Option B: MySQL**
+   - Create a MySQL database
+   - Update `.env` file:
+     ```
+     DB_CONNECTION=mysql
+     DB_HOST=127.0.0.1
+     DB_PORT=3306
+     DB_DATABASE=your_database_name
+     DB_USERNAME=your_username
+     DB_PASSWORD=your_password
+     ```
 
-5. **Run migrations and seeders**
+5. **Create database tables** (Run migrations)
    ```bash
    php artisan migrate
-   php artisan db:seed
    ```
 
-6. **Start the development server**
+6. **Seed the database** (Create test users and sample data)
+   ```bash
+   php artisan db:seed
+   ```
+   
+   **Note**: To start fresh, you can reset and reseed:
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+7. **Configure Facebook Login (Optional)**
+   
+   To enable Facebook social login:
+   
+   a. Create a Facebook App at [Facebook Developers](https://developers.facebook.com/)
+   
+   b. Add your app credentials to `.env` file:
+   ```
+   FACEBOOK_CLIENT_ID=your_facebook_app_id
+   FACEBOOK_CLIENT_SECRET=your_facebook_app_secret
+   FACEBOOK_REDIRECT_URI=http://localhost:8000/auth/facebook/callback
+   ```
+   
+   c. In Facebook App Settings:
+      - Add `http://localhost:8000/auth/facebook/callback` as a Valid OAuth Redirect URI
+      - For production, add your production domain
+   
+   **Note**: Facebook social login is optional and the app works fine without it.
+
+8. **Start the development server**
    ```bash
    php artisan serve
    ```
 
-7. **Access the application**
+9. **Access the application**
    - Open your browser and go to `http://localhost:8000`
 
 ## Default Login Credentials
