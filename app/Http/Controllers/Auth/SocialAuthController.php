@@ -77,6 +77,71 @@ class SocialAuthController extends Controller
     }
 
     /**
+     * Redirect to Google for authentication
+     */
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    /**
+     * Handle Google callback
+     */
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+            
+            // Check if user exists by provider
+            $user = User::where('provider', 'google')
+                        ->where('provider_id', $googleUser->getId())
+                        ->first();
+
+            if ($user) {
+                // User exists, log them in
+                Auth::login($user);
+            } else {
+                // Check if user exists by email
+                $existingUser = User::where('email', $googleUser->getEmail())->first();
+
+                if ($existingUser) {
+                    // Link Google account to existing user
+                    $existingUser->provider = 'google';
+                    $existingUser->provider_id = $googleUser->getId();
+                    $existingUser->save();
+                    Auth::login($existingUser);
+                } else {
+                    // Create new user from Google data
+                    $name = $googleUser->getName();
+                    $nameParts = $this->parseName($name);
+
+                    $user = User::create([
+                        'fname' => $nameParts['first'],
+                        'mname' => $nameParts['middle'],
+                        'lname' => $nameParts['last'],
+                        'email' => $googleUser->getEmail(),
+                        'password' => bcrypt(Str::random(16)), // Random password for social login
+                        'role' => 'patient', // Default role
+                        'provider' => 'google',
+                        'provider_id' => $googleUser->getId(),
+                        'email_verified_at' => now(),
+                    ]);
+
+                    Auth::login($user);
+                }
+            }
+
+            // Redirect based on user role
+            return $this->redirectBasedOnRole(Auth::user());
+            
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Failed to authenticate with Google: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
      * Parse full name into first, middle, and last name
      */
     private function parseName($fullName)

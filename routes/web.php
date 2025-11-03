@@ -35,6 +35,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Social authentication routes
 Route::get('/auth/facebook', [SocialAuthController::class, 'redirectToFacebook'])->name('facebook.login');
 Route::get('/auth/facebook/callback', [SocialAuthController::class, 'handleFacebookCallback'])->name('facebook.callback');
+Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback'])->name('google.callback');
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {

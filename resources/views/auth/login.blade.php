@@ -118,27 +118,33 @@
         </form>
 
         <!-- Divider -->
-        <div class="mt-5">
+        <div class="mt-4">
             <div class="relative">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-300"></div>
                 </div>
-                <div class="relative flex justify-center text-sm">
-                    <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                <div class="relative flex justify-center text-xs">
+                    <span class="px-2 bg-white text-gray-500">Or</span>
                 </div>
             </div>
         </div>
 
-        <!-- Facebook Login Button -->
-        <div class="mt-4">
+        <!-- Social Login Buttons -->
+        <div class="mt-3 grid grid-cols-2 gap-2">
+            <a href="{{ route('google.login') }}" 
+               class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                <i class="fab fa-google text-red-600 mr-1.5"></i>
+                Google
+            </a>
+            
             <a href="{{ route('facebook.login') }}" 
-               class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                <i class="fab fa-facebook text-blue-600 text-lg mr-2"></i>
-                Sign in with Facebook
+               class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                <i class="fab fa-facebook text-blue-600 mr-1.5"></i>
+                Facebook
             </a>
         </div>
 
-        <div class="mt-5 text-center">
+        <div class="mt-4 text-center">
             <p class="text-gray-600">
                 Don't have an account? 
                 <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-500 font-medium">

@@ -14,7 +14,7 @@ A comprehensive hospital management system built with Laravel 11, featuring role
 
 ### 🔐 Authentication & Authorization
 - Secure login/registration system
-- **Facebook Social Login** integration
+- **Google & Facebook Social Login** integration
 - Role-based access control
 - Password hashing and validation
 - Session management
@@ -109,24 +109,37 @@ A comprehensive hospital management system built with Laravel 11, featuring role
    php artisan migrate:fresh --seed
    ```
 
-7. **Configure Facebook Login (Optional)**
+7. **Configure Social Login (Optional)**
    
-   To enable Facebook social login:
+   The app supports Google and Facebook login. To enable social login:
+   
+   **For Google:**
+   
+   a. Create a Google Cloud Project at [Google Cloud Console](https://console.cloud.google.com/)
+   
+   b. Enable Google+ API and create OAuth 2.0 credentials
+   
+   c. Add credentials to `.env`:
+   ```
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
+   ```
+   
+   **For Facebook:**
    
    a. Create a Facebook App at [Facebook Developers](https://developers.facebook.com/)
    
-   b. Add your app credentials to `.env` file:
+   b. Add credentials to `.env`:
    ```
    FACEBOOK_CLIENT_ID=your_facebook_app_id
    FACEBOOK_CLIENT_SECRET=your_facebook_app_secret
    FACEBOOK_REDIRECT_URI=http://localhost:8000/auth/facebook/callback
    ```
    
-   c. In Facebook App Settings:
-      - Add `http://localhost:8000/auth/facebook/callback` as a Valid OAuth Redirect URI
-      - For production, add your production domain
+   c. Add redirect URIs in respective app settings
    
-   **Note**: Facebook social login is optional and the app works fine without it.
+   **Note**: Social login is optional and the app works fine without it. See `FACEBOOK_LOGIN_SETUP.md` for detailed instructions.
 
 8. **Start the development server**
    ```bash
