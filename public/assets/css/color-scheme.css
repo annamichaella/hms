@@ -1,0 +1,159 @@
+/* MediCare Pro - Standardized Color Scheme */
+
+/* Primary Colors */
+:root {
+  --primary-blue: #3B82F6;
+  --primary-blue-light: #DBEAFE;
+  --primary-blue-dark: #1E40AF;
+  
+  --success-green: #10B981;
+  --success-green-light: #D1FAE5;
+  --success-green-dark: #047857;
+  
+  --warning-yellow: #F59E0B;
+  --warning-yellow-light: #FEF3C7;
+  --warning-yellow-dark: #D97706;
+  
+  --danger-red: #EF4444;
+  --danger-red-light: #FEE2E2;
+  --danger-red-dark: #DC2626;
+  
+  --info-purple: #8B5CF6;
+  --info-purple-light: #EDE9FE;
+  --info-purple-dark: #7C3AED;
+  
+  --neutral-gray: #6B7280;
+  --neutral-gray-light: #F3F4F6;
+  --neutral-gray-dark: #374151;
+}
+
+/* Status Badge Colors */
+.status-confirmed {
+  @apply bg-green-100 text-green-800;
+}
+
+.status-pending {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.status-cancelled {
+  @apply bg-red-100 text-red-800;
+}
+
+.status-completed {
+  @apply bg-blue-100 text-blue-800;
+}
+
+/* Role-based Color Themes */
+.role-staff {
+  --role-primary: #3B82F6;
+  --role-primary-light: #DBEAFE;
+  --role-accent: #1E40AF;
+}
+
+.role-doctor {
+  --role-primary: #10B981;
+  --role-primary-light: #D1FAE5;
+  --role-accent: #047857;
+}
+
+.role-nurse {
+  --role-primary: #8B5CF6;
+  --role-primary-light: #EDE9FE;
+  --role-accent: #7C3AED;
+}
+
+.role-patient {
+  --role-primary: #3B82F6;
+  --role-primary-light: #DBEAFE;
+  --role-accent: #1E40AF;
+}
+
+/* Icon Colors */
+.icon-doctor {
+  @apply text-green-600 bg-green-100;
+}
+
+.icon-nurse {
+  @apply text-purple-600 bg-purple-100;
+}
+
+.icon-patient {
+  @apply text-blue-600 bg-blue-100;
+}
+
+.icon-appointment {
+  @apply text-blue-600 bg-blue-100;
+}
+
+.icon-room {
+  @apply text-purple-600 bg-purple-100;
+}
+
+.icon-calendar {
+  @apply text-blue-600 bg-blue-100;
+}
+
+/* Button Colors */
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+}
+
+.btn-success {
+  @apply bg-green-600 text-white hover:bg-green-700 focus:ring-green-500;
+}
+
+.btn-warning {
+  @apply bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-yellow-500;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+}
+
+.btn-secondary {
+  @apply bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500;
+}
+
+/* Card Colors */
+.card-header {
+  @apply bg-white border-b border-gray-200;
+}
+
+.card-body {
+  @apply bg-white;
+}
+
+.card-footer {
+  @apply bg-gray-50 border-t border-gray-200;
+}
+
+/* Sidebar Colors */
+.sidebar {
+  @apply bg-gray-800;
+}
+
+.sidebar-item {
+  @apply text-gray-300 hover:bg-gray-700 hover:text-white;
+}
+
+.sidebar-item.active {
+  @apply text-white bg-blue-600;
+}
+
+/* Form Colors */
+.form-input {
+  @apply border-gray-300 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.form-label {
+  @apply text-gray-700;
+}
+
+.form-error {
+  @apply text-red-600 bg-red-50 border-red-200;
+}
+
+.form-success {
+  @apply text-green-600 bg-green-50 border-green-200;
+}

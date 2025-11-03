@@ -3,18 +3,36 @@
 @section('title', 'Ward Assignments')
 @section('page-title', 'Ward Assignments')
 
+@php
+    $currentRoute = request()->route()->getName();
+    $isActive = function($route) use ($currentRoute) {
+        return strpos($currentRoute, $route) === 0 
+            ? 'text-blue-700 bg-gradient-to-r from-blue-50 to-blue-100 border-l-3 border-blue-600 font-medium shadow-sm' 
+            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900';
+    };
+@endphp
+
 @section('sidebar')
-<nav class="space-y-1">
-    <a href="{{ route('nurse.dashboard') }}" class="flex items-center px-3 py-2 rounded text-gray-300 hover:bg-gray-700 hover:text-white">
-        <i class="fas fa-home mr-3 text-sm"></i> Dashboard
-    </a>
-    <a href="{{ route('nurse.patients') }}" class="flex items-center px-3 py-2 rounded text-gray-300 hover:bg-gray-700 hover:text-white">
-        <i class="fas fa-user-injured mr-3 text-sm"></i> My Patients
-    </a>
-    <a href="{{ route('nurse.ward-assignments') }}" class="flex items-center px-3 py-2 rounded text-white bg-pink-600">
-        <i class="fas fa-bed mr-3 text-sm"></i> Ward Assignments
-    </a>
-</nav>
+    <div class="px-2 space-y-0.5">
+        <a href="{{ route('nurse.dashboard') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('nurse.dashboard') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-tachometer-alt mr-2.5 text-sm w-4 text-center"></i> Dashboard
+        </a>
+        <a href="{{ route('nurse.patients') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('nurse.patients') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-user-injured mr-2.5 text-sm w-4 text-center"></i> Patients
+        </a>
+        <a href="{{ route('nurse.wards') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('nurse.wards') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-bed mr-2.5 text-sm w-4 text-center"></i> Wards
+        </a>
+        <a href="{{ route('nurse.ward-assignments') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('nurse.ward-assignments') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-procedures mr-2.5 text-sm w-4 text-center"></i> Ward Assignments
+        </a>
+    </div>
+    
+    <style>
+    .border-l-3 {
+        border-left-width: 3px;
+    }
+    </style>
 @endsection
 
 @section('content')
@@ -40,7 +58,7 @@
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Available Beds</p>
-                <p class="text-2xl font-bold text-gray-900" id="availableBeds">{{ $stats['available_beds'] }}</p>
+                <p class="text-xl font-bold text-gray-900" id="availableBeds">{{ $stats['available_beds'] }}</p>
             </div>
         </div>
     </div>
@@ -51,7 +69,7 @@
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Occupied Beds</p>
-                <p class="text-2xl font-bold text-gray-900" id="occupiedBeds">{{ $stats['occupied_beds'] }}</p>
+                <p class="text-xl font-bold text-gray-900" id="occupiedBeds">{{ $stats['occupied_beds'] }}</p>
             </div>
         </div>
     </div>
@@ -62,7 +80,7 @@
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Total Beds</p>
-                <p class="text-2xl font-bold text-gray-900" id="totalBeds">{{ $stats['total_beds'] }}</p>
+                <p class="text-xl font-bold text-gray-900" id="totalBeds">{{ $stats['total_beds'] }}</p>
             </div>
         </div>
     </div>
@@ -71,7 +89,7 @@
 <!-- Beds Table -->
 <div class="bg-white rounded-lg shadow">
     <div class="px-6 py-4 border-b border-gray-200">
-        <h2 class="text-lg font-medium text-gray-900">Bed Status</h2>
+        <h2 class="text-base font-medium text-gray-900">Bed Status</h2>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
@@ -130,7 +148,7 @@
     <div class="flex items-center justify-center min-h-screen p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">Assign Patient to Bed</h3>
+                <h3 class="text-base font-medium text-gray-900">Assign Patient to Bed</h3>
             </div>
             <form id="assignForm" class="p-6">
                 <div class="mb-4">
@@ -248,37 +266,41 @@ document.getElementById('assignForm').addEventListener('submit', function(e) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);
+            showNotification(data.message || 'Assignment created successfully', 'success');
             closeAssignModal();
-            location.reload();
+            setTimeout(() => location.reload(), 1000);
         } else {
-            alert('Error: ' + data.error);
+            showNotification('Error: ' + (data.error || 'Failed to create assignment'), 'error');
         }
+    })
+    .catch(error => {
+        showNotification('An error occurred. Please try again.', 'error');
     });
 });
 
 // Discharge patient
 function dischargePatient(bedId) {
-    if (!confirm('Are you sure you want to discharge this patient?')) {
-        return;
-    }
-
-    fetch('{{ route("nurse.ward-assignments.discharge") }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ bed_id: bedId })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            location.reload();
-        } else {
-            alert('Error: ' + data.error);
-        }
+    confirmAction('Are you sure you want to discharge this patient?', function() {
+        fetch('{{ route("nurse.ward-assignments.discharge") }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ bed_id: bedId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message || 'Patient discharged successfully', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showNotification('Error: ' + (data.error || 'Failed to discharge patient'), 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('An error occurred while discharging the patient', 'error');
+        });
     });
 }
 </script>

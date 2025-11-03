@@ -11,12 +11,36 @@ use Illuminate\Support\Facades\Validator;
 
 class AssignmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $appointments = Appointment::with(['patient', 'doctor', 'nurse'])
-            ->orderBy('appointment_date', 'desc')
+        $query = Appointment::with(['patient', 'doctor', 'nurse']);
+
+        // Add search functionality
+        if ($request->has('keyword') && !empty($request->keyword)) {
+            $keyword = $request->keyword;
+            $query->where(function ($q) use ($keyword) {
+                $q->whereHas('patient', function ($q2) use ($keyword) {
+                    $q2->where('fname', 'like', "%{$keyword}%")
+                       ->orWhere('lname', 'like', "%{$keyword}%");
+                })
+                ->orWhereHas('doctor', function ($q2) use ($keyword) {
+                    $q2->where('fname', 'like', "%{$keyword}%")
+                       ->orWhere('lname', 'like', "%{$keyword}%");
+                })
+                ->orWhere('appointment_date', 'like', "%{$keyword}%");
+            });
+        }
+
+        $appointments = $query->orderBy('appointment_date', 'desc')
             ->orderBy('appointment_time', 'desc')
             ->get();
+
+        if ($request->expectsJson() || ($request->isMethod('GET') && $request->has('keyword'))) {
+            return response()->json([
+                'success' => true,
+                'data' => $appointments
+            ]);
+        }
 
         return view('staff.assignments', compact('appointments'));
     }
@@ -140,10 +164,10 @@ class AssignmentController extends Controller
 
         $data = [
             'id' => $appointment->id,
-            'patient_fname' => $appointment->patient->fname,
-            'patient_lname' => $appointment->patient->lname,
-            'doctor_fname' => $appointment->doctor->fname,
-            'doctor_lname' => $appointment->doctor->lname,
+            'patient_fname' => $appointment->patient ? $appointment->patient->fname : null,
+            'patient_lname' => $appointment->patient ? $appointment->patient->lname : null,
+            'doctor_fname' => $appointment->doctor ? $appointment->doctor->fname : null,
+            'doctor_lname' => $appointment->doctor ? $appointment->doctor->lname : null,
             'nurse_fname' => $appointment->nurse ? $appointment->nurse->fname : null,
             'nurse_lname' => $appointment->nurse ? $appointment->nurse->lname : null,
             'appointment_date' => $appointment->appointment_date->format('Y-m-d'),

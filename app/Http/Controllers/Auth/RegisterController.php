@@ -25,7 +25,6 @@ class RegisterController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
-            'role' => 'required|in:patient,doctor,nurse,staff',
         ]);
 
         $user = User::create([
@@ -34,7 +33,7 @@ class RegisterController extends Controller
             'lname' => $request->lname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role' => 'patient', // Default role for registration
             'phone' => $request->phone,
             'address' => $request->address,
         ]);

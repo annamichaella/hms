@@ -138,6 +138,29 @@ class ScheduleController extends Controller
         ]);
     }
 
+    public function fetch(Request $request)
+    {
+        $query = DoctorSchedule::where('doctor_id', Auth::id());
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = strtolower(trim($request->search));
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(day) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(start_time) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(end_time) LIKE ?', ["%{$search}%"]);
+            });
+        }
+
+        $schedules = $query->orderBy('day')
+            ->orderBy('start_time')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $schedules
+        ]);
+    }
+
     public function search(Request $request)
     {
         $query = DoctorSchedule::where('doctor_id', Auth::id());

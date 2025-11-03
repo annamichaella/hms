@@ -4,28 +4,7 @@
 @section('page-title', 'Admin Dashboard')
 
 @section('sidebar')
-    <div class="px-4 space-y-2">
-        <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-2 text-gray-700 bg-blue-50 rounded-lg">
-            <i class="fas fa-tachometer-alt mr-3"></i>
-            Dashboard
-        </a>
-        <a href="{{ route('admin.users.index') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-            <i class="fas fa-users mr-3"></i>
-            Users
-        </a>
-        <a href="{{ route('admin.appointments.index') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-            <i class="fas fa-calendar-check mr-3"></i>
-            Appointments
-        </a>
-        <a href="{{ route('admin.wards.index') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-            <i class="fas fa-bed mr-3"></i>
-            Wards
-        </a>
-        <a href="{{ route('admin.billings.index') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-            <i class="fas fa-credit-card mr-3"></i>
-            Billing
-        </a>
-    </div>
+    @include('partials.admin-sidebar')
 @endsection
 
 @section('content')
@@ -38,7 +17,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Total Users</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['total_users'] }}</p>
+                    <p class="text-xl font-bold text-gray-900">{{ $stats['total_users'] }}</p>
                 </div>
             </div>
         </div>
@@ -50,7 +29,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Appointments</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['total_appointments'] }}</p>
+                    <p class="text-xl font-bold text-gray-900">{{ $stats['total_appointments'] }}</p>
                 </div>
             </div>
         </div>
@@ -62,7 +41,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Billing Records</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['total_billings'] }}</p>
+                    <p class="text-xl font-bold text-gray-900">{{ $stats['total_billings'] }}</p>
                 </div>
             </div>
         </div>
@@ -74,7 +53,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Wards</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['total_wards'] }}</p>
+                    <p class="text-xl font-bold text-gray-900">{{ $stats['total_wards'] }}</p>
                 </div>
             </div>
         </div>
@@ -84,7 +63,7 @@
         <!-- Recent Appointments -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900">Recent Appointments</h3>
+                <h3 class="text-base font-semibold text-gray-900">Recent Appointments</h3>
             </div>
             <div class="p-6">
                 @if($stats['recent_appointments']->count() > 0)
@@ -122,7 +101,7 @@
         <!-- Users by Role -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900">Users by Role</h3>
+                <h3 class="text-base font-semibold text-gray-900">Users by Role</h3>
             </div>
             <div class="p-6">
                 <div class="space-y-4">
@@ -147,6 +126,9 @@
         </div>
     </div>
 @endsection
+
+
+
 
 
 

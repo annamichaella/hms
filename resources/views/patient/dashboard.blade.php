@@ -3,25 +3,36 @@
 @section('title', 'Patient Dashboard')
 @section('page-title', 'Patient Dashboard')
 
+@php
+    $currentRoute = request()->route()->getName();
+    $isActive = function($route) use ($currentRoute) {
+        return strpos($currentRoute, $route) === 0 
+            ? 'text-blue-700 bg-gradient-to-r from-blue-50 to-blue-100 border-l-3 border-blue-600 font-medium shadow-sm' 
+            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900';
+    };
+@endphp
+
 @section('sidebar')
-    <div class="px-4 space-y-2">
-        <a href="{{ route('patient.dashboard') }}" class="flex items-center px-4 py-2 text-gray-700 bg-blue-50 rounded-lg">
-            <i class="fas fa-tachometer-alt mr-3"></i>
-            Dashboard
+    <div class="px-2 space-y-0.5">
+        <a href="{{ route('patient.dashboard') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.dashboard') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-tachometer-alt mr-2.5 text-sm w-4 text-center"></i> Dashboard
         </a>
-        <a href="{{ route('patient.appointments') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-            <i class="fas fa-calendar-check mr-3"></i>
-            My Appointments
+        <a href="{{ route('patient.appointments') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.appointments') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-calendar-check mr-2.5 text-sm w-4 text-center"></i> My Appointments
         </a>
-        <a href="{{ route('patient.records') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-            <i class="fas fa-file-medical mr-3"></i>
-            Medical Records
+        <a href="{{ route('patient.records') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.records') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-file-medical mr-2.5 text-sm w-4 text-center"></i> Medical Records
         </a>
-        <a href="{{ route('patient.billing') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-            <i class="fas fa-credit-card mr-3"></i>
-            Billing
+        <a href="{{ route('patient.billing') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.billing') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-credit-card mr-2.5 text-sm w-4 text-center"></i> Billing
         </a>
     </div>
+    
+    <style>
+    .border-l-3 {
+        border-left-width: 3px;
+    }
+    </style>
 @endsection
 
 @section('content')
@@ -32,7 +43,7 @@
                 <i class="fas fa-user text-white text-xl"></i>
             </div>
             <div>
-                <h2 class="text-xl font-semibold text-blue-900">Welcome back, {{ Auth::user()->full_name }}!</h2>
+                <h2 class="text-lg font-semibold text-blue-900">Welcome back, {{ Auth::user()->full_name }}!</h2>
                 <p class="text-blue-700">Here's an overview of your health information and upcoming appointments.</p>
             </div>
         </div>
@@ -47,7 +58,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Total Appointments</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['total_appointments'] }}</p>
+                    <p class="text-xl font-bold text-gray-900">{{ $stats['total_appointments'] }}</p>
                 </div>
             </div>
         </div>
@@ -59,7 +70,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Upcoming</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['upcoming_appointments']->count() }}</p>
+                    <p class="text-xl font-bold text-gray-900">{{ $stats['upcoming_appointments']->count() }}</p>
                 </div>
             </div>
         </div>
@@ -71,7 +82,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Pending Bills</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['pending_bills'] }}</p>
+                    <p class="text-xl font-bold text-gray-900">{{ $stats['pending_bills'] }}</p>
                 </div>
             </div>
         </div>
@@ -82,7 +93,7 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900">Upcoming Appointments</h3>
+                    <h3 class="text-base font-semibold text-gray-900">Upcoming Appointments</h3>
                     <a href="{{ route('patient.appointments') }}" class="text-blue-600 hover:text-blue-500 text-sm font-medium">
                         View All
                     </a>
@@ -127,7 +138,7 @@
         <!-- Medical Records Summary -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900">Medical Records</h3>
+                <h3 class="text-base font-semibold text-gray-900">Medical Records</h3>
             </div>
             <div class="p-6">
                 @if($stats['patient_record'])
@@ -169,6 +180,9 @@
         </div>
     </div>
 @endsection
+
+
+
 
 
 

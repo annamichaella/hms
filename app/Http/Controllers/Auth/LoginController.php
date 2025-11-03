@@ -24,6 +24,16 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
 
+        // Try to find user first for better error handling
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'No account found with this email address.',
+            ])->onlyInput('email');
+        }
+
+        // Check password - Laravel's Hash::check works with PHP's password_hash()
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
@@ -46,8 +56,9 @@ class LoginController extends Controller
             }
         }
 
+        // If we get here, password was incorrect
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'The provided password is incorrect.',
         ])->onlyInput('email');
     }
 

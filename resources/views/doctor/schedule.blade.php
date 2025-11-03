@@ -3,32 +3,47 @@
 @section('title', 'My Schedule')
 @section('page-title', 'My Schedule')
 
+@php
+    $currentRoute = request()->route()->getName();
+    $isActive = function($route) use ($currentRoute) {
+        return strpos($currentRoute, $route) === 0 
+            ? 'text-blue-700 bg-gradient-to-r from-blue-50 to-blue-100 border-l-3 border-blue-600 font-medium shadow-sm' 
+            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900';
+    };
+@endphp
+
 @section('sidebar')
-<nav class="space-y-1">
-    <a href="{{ route('doctor.dashboard') }}" class="flex items-center px-3 py-2 rounded text-gray-300 hover:bg-gray-700 hover:text-white">
-        <i class="fas fa-home mr-3 text-sm"></i> Dashboard
-    </a>
-    <a href="{{ route('doctor.appointments') }}" class="flex items-center px-3 py-2 rounded text-gray-300 hover:bg-gray-700 hover:text-white">
-        <i class="fas fa-calendar mr-3 text-sm"></i> My Appointments
-    </a>
-    <a href="{{ route('doctor.schedule') }}" class="flex items-center px-3 py-2 rounded text-white bg-blue-600">
-        <i class="fas fa-clock mr-3 text-sm"></i> My Schedule
-    </a>
-    <a href="{{ route('doctor.patients') }}" class="flex items-center px-3 py-2 rounded text-gray-300 hover:bg-gray-700 hover:text-white">
-        <i class="fas fa-user-injured mr-3 text-sm"></i> My Patients
-    </a>
-</nav>
+    <div class="px-2 space-y-0.5">
+        <a href="{{ route('doctor.dashboard') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('doctor.dashboard') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-tachometer-alt mr-2.5 text-sm w-4 text-center"></i> Dashboard
+        </a>
+        <a href="{{ route('doctor.appointments') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('doctor.appointments') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-calendar-check mr-2.5 text-sm w-4 text-center"></i> My Appointments
+        </a>
+        <a href="{{ route('doctor.patients') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('doctor.patients') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-user-injured mr-2.5 text-sm w-4 text-center"></i> My Patients
+        </a>
+        <a href="{{ route('doctor.schedule') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('doctor.schedule') }} rounded-md transition-all duration-200 group">
+            <i class="fas fa-calendar-alt mr-2.5 text-sm w-4 text-center"></i> My Schedule
+        </a>
+    </div>
+    
+    <style>
+    .border-l-3 {
+        border-left-width: 3px;
+    }
+    </style>
 @endsection
 
 @section('content')
 <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">My Schedule</h1>
+    <h1 class="text-xl font-bold text-gray-800">My Schedule</h1>
     <p class="text-gray-600">View and manage your weekly schedule.</p>
 </div>
 
 <!-- Add Schedule Form -->
 <div class="mb-6 bg-white p-6 rounded border border-gray-200 shadow-sm">
-    <h3 id="formTitle" class="text-lg font-semibold mb-4">Add Schedule</h3>
+    <h3 id="formTitle" class="text-base font-semibold mb-4">Add Schedule</h3>
     <form id="scheduleForm" class="flex flex-wrap gap-4">
         <input type="hidden" name="id" id="schedule_id">
         
@@ -146,8 +161,8 @@ function editSchedule(id, day, startTime, endTime) {
 }
 
 function deleteSchedule(id) {
-    if(confirm("Are you sure you want to delete this schedule?")) {
-        fetch('{{ route("doctor.schedule.destroy", "") }}/' + id, {
+    confirmAction('Are you sure you want to delete this schedule?', function() {
+        fetch('{{ url("doctor/schedule") }}/' + id, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -157,17 +172,17 @@ function deleteSchedule(id) {
         .then(res => res.json())
         .then(data => {
             if(data.status === 'success') {
-                alert(data.message);
-                location.reload();
+                showNotification(data.message || 'Schedule deleted successfully', 'success');
+                setTimeout(() => location.reload(), 1000);
             } else {
-                alert('Delete failed: ' + (data.message || 'Unknown error'));
+                showNotification('Delete failed: ' + (data.message || 'Unknown error'), 'error');
             }
         })
         .catch(err => {
             console.error(err);
-            alert('Error deleting schedule');
+            showNotification('Error deleting schedule', 'error');
         });
-    }
+    });
 }
 
 function searchSchedules() {
@@ -238,7 +253,7 @@ scheduleForm.addEventListener("submit", function(e) {
 
     const formData = new FormData(scheduleForm);
     const scheduleId = formData.get('id');
-    const url = scheduleId ? '{{ route("doctor.schedule.update", "") }}/' + scheduleId : '{{ route("doctor.schedule.store") }}';
+    const url = scheduleId ? '{{ url("doctor/schedule") }}/' + scheduleId : '{{ route("doctor.schedule.store") }}';
     const method = scheduleId ? 'PUT' : 'POST';
 
     fetch(url, {

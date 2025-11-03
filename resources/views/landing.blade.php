@@ -64,11 +64,38 @@
         .text-white {
             color: #ffffff !important;
         }
+        
+        /* Professional shadows */
+        .shadow-professional {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
     </style>
 </head>
 <body class="font-inter bg-gray-50 text-gray-800">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-professional border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center mr-2.5 shadow-sm">
+                        <i class="fas fa-heartbeat text-white text-sm"></i>
+                    </div>
+                    <span class="text-lg font-semibold text-gray-800 tracking-tight">MediCare Pro</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#home" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Home</a>
+                    <a href="#features" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Features</a>
+                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Login</a>
+                    <a href="{{ route('register') }}" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-blue-800 shadow-md hover:shadow-lg transition-all duration-200">
+                        Sign Up
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
     <!-- Hero Section -->
-    <section id="home" class="hero-section pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+    <section id="home" class="hero-section pt-16 pb-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Hero Content -->
