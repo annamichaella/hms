@@ -5,14 +5,14 @@
 @section('content')
 <div class="fade-in">
     <!-- Page Header -->
-    <div class="mb-8">
+    <div class="page-header">
         <h1 class="text-3xl font-bold text-gray-800 mb-2">My Bills & Payments</h1>
         <p class="text-gray-600">View your billing history and manage payments</p>
     </div>
 
     @if($bills->count() > 0)
         <!-- Billing Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="py-8 px-4 sm:px-6 lg:px-8 bg-white rounded-2xl shadow-sm mb-6">
             @php
                 $totalBills = $bills->count();
                 $paidBills = $bills->where('status', 'paid')->count();
@@ -21,8 +21,8 @@
                 $paidAmount = $bills->where('status', 'paid')->sum('amount');
                 $pendingAmount = $bills->where('status', 'pending')->sum('amount');
             @endphp
-            
-            <div class="patient-card p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-100">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="patient-card p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-100">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-blue-700 mb-1">Total Bills</p>
@@ -60,10 +60,11 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
 
         <!-- Bills List -->
-        <div class="space-y-4">
+        <div class="space-y-4 py-8 px-4 sm:px-6 lg:px-8 bg-gray-50 rounded-2xl mt-6">
             @foreach($bills as $bill)
                 <div class="patient-card p-6 hover-soft">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -109,7 +110,7 @@
                                 <p class="text-xs text-gray-500">Total Amount</p>
                             </div>
                             @if($bill->status == 'pending')
-                                <button class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 font-medium transition-all shadow-md hover-soft">
+                                <button class="btn-primary inline-flex items-center">
                                     <i class="fas fa-credit-card mr-2"></i>Pay Now
                                 </button>
                             @endif
@@ -119,12 +120,12 @@
             @endforeach
         </div>
     @else
-        <div class="patient-card p-12 text-center">
-            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div class="empty-state">
+            <div class="empty-state-icon">
                 <i class="fas fa-receipt text-gray-400 text-4xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">No bills found</h3>
-            <p class="text-gray-600">Your billing information will appear here once you have any medical services or appointments.</p>
+            <h3>No bills found</h3>
+            <p>Your billing information will appear here once you have any medical services or appointments.</p>
         </div>
     @endif
 </div>

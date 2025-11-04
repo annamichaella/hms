@@ -54,8 +54,8 @@ Go to `http://localhost:8000/login` → Click **"Sign in with Google"**
 5. Go to **Settings** → **Basic** → **Copy App ID and App Secret**
 6. Click **"Add Products"** → Find **"Facebook Login"** → **"Set Up"**
 7. Choose **"Web"** platform
-8. Go to **Settings** under "Facebook Login"
-9. Add redirect URI: `http://localhost:8000/auth/facebook/callback` → **"Save"**
+
+**Note**: `http://localhost` redirects are automatically allowed in development mode, so you don't need to add them manually. Only add redirect URIs when deploying to production.
 
 ## Step 2: Add Facebook to .env
 
@@ -104,8 +104,9 @@ FACEBOOK_REDIRECT_URI=http://localhost:8000/auth/facebook/callback
 - ✅ Restart Laravel server
 
 ### "redirect_uri_mismatch"
-- ✅ Make sure redirect URI in `.env` matches exactly what's in app settings
-- ✅ Check `http` vs `https`
+- ✅ **For development**: `http://localhost` redirects are automatically allowed - no configuration needed
+- ✅ **For production**: Make sure redirect URI in `.env` matches exactly what's in app settings
+- ✅ Check `http` vs `https` (production must use HTTPS)
 - ✅ No trailing slashes
 
 ### "Access Denied" / "403 Error"

@@ -5,20 +5,20 @@
 @section('content')
 <div class="fade-in">
     <!-- Page Header -->
-    <div class="mb-8">
-        <div class="flex items-center space-x-4 mb-4">
+    <div class="page-header">
+        <div class="flex items-center space-x-4">
             <a href="{{ route('patient.appointments') }}" 
                class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md hover:shadow-lg transition-shadow text-gray-600 hover:text-blue-600">
                 <i class="fas fa-arrow-left"></i>
             </a>
             <div>
-                <h1 class="text-3xl font-bold text-gray-800">Appointment Details</h1>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Appointment Details</h1>
                 <p class="text-gray-600">View your appointment information</p>
             </div>
         </div>
     </div>
 
-    <div class="patient-card p-8">
+    <div class="patient-card p-8 bg-gray-50">
         <!-- Doctor Information -->
         <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100 mb-6">
             <div class="flex items-center space-x-4 mb-4">
@@ -108,7 +108,7 @@
 
         <!-- Assigned Nurse -->
         @if($appointment->nurse)
-        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-2xl border border-indigo-100">
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-2xl border border-indigo-100 mb-6">
             <div class="flex items-center space-x-4">
                 <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center">
                     <i class="fas fa-user-nurse text-white"></i>
@@ -128,14 +128,12 @@
                       onsubmit="return confirm('Are you sure you want to cancel this appointment?');" class="flex-1">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" 
-                            class="w-full px-6 py-3 bg-red-50 text-red-600 border-2 border-red-200 rounded-xl font-semibold hover:bg-red-100 transition-all duration-200">
+                    <button type="submit" class="w-full btn-danger">
                         <i class="fas fa-times mr-2"></i>Cancel Appointment
                     </button>
                 </form>
             @endif
-            <a href="{{ route('patient.appointments') }}" 
-               class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200 text-center">
+            <a href="{{ route('patient.appointments') }}" class="btn-secondary text-center">
                 <i class="fas fa-arrow-left mr-2"></i>Back to Appointments
             </a>
         </div>

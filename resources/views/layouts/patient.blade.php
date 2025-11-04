@@ -56,7 +56,7 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
         
-        /* Patient-friendly card styles */
+        /* Standardized patient-friendly card styles */
         .patient-card {
             background: white;
             border-radius: 16px;
@@ -66,6 +66,63 @@
         
         .patient-card:hover {
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Standardized button styles */
+        .btn-primary {
+            background: linear-gradient(to right, #2563eb, #1d4ed8);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #1d4ed8, #1e40af);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            border: 2px solid #d1d5db;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f9fafb;
+        }
+        
+        .btn-danger {
+            background-color: #fef2f2;
+            color: #dc2626;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-danger:hover {
+            background-color: #fee2e2;
+        }
+        
+        .btn-outline {
+            border: 2px solid #2563eb;
+            color: #2563eb;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-outline:hover {
+            background-color: #2563eb;
+            color: white;
         }
         
         /* Smooth animations */
@@ -82,6 +139,54 @@
         
         .fade-in {
             animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Standardized page header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-header p {
+            color: #4b5563;
+        }
+        
+        /* Standardized empty state */
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        .empty-state-icon {
+            width: 6rem;
+            height: 6rem;
+            background-color: #f3f4f6;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            color: #4b5563;
+            margin-bottom: 2rem;
         }
     </style>
 </head>
@@ -269,4 +374,3 @@
     @stack('scripts')
 </body>
 </html>
-

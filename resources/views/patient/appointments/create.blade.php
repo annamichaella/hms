@@ -5,14 +5,14 @@
 @section('content')
 <div class="fade-in">
     <!-- Page Header -->
-    <div class="mb-8">
-        <div class="flex items-center space-x-4 mb-4">
+    <div class="page-header">
+        <div class="flex items-center space-x-4">
             <a href="{{ route('patient.appointments') }}" 
                class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md hover:shadow-lg transition-shadow text-gray-600 hover:text-blue-600">
                 <i class="fas fa-arrow-left"></i>
             </a>
             <div>
-                <h1 class="text-3xl font-bold text-gray-800">Book an Appointment</h1>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Book an Appointment</h1>
                 <p class="text-gray-600">Schedule a visit with one of our healthcare providers</p>
             </div>
         </div>
@@ -35,7 +35,7 @@
     @endif
 
     <!-- Booking Form -->
-    <div class="patient-card p-8">
+    <div class="patient-card p-8 bg-gray-50">
         <form action="{{ route('patient.appointments.store') }}" method="POST" class="space-y-6">
             @csrf
             
@@ -46,7 +46,7 @@
                     Select Your Doctor *
                 </label>
                 <select name="doctor_id" required 
-                        class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 text-base @error('doctor_id') border-red-400 @enderror">
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-900 text-base @error('doctor_id') border-red-400 @enderror">
                     <option value="">Choose a doctor...</option>
                     @foreach($doctors as $doctor)
                         <option value="{{ $doctor->id }}" {{ old('doctor_id') == $doctor->id ? 'selected' : '' }}>
@@ -75,7 +75,7 @@
                     </label>
                     <input type="date" name="appointment_date" value="{{ old('appointment_date') }}" required 
                            min="{{ date('Y-m-d') }}" 
-                           class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all bg-white text-gray-900 text-base @error('appointment_date') border-red-400 @enderror">
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all bg-white text-gray-900 text-base @error('appointment_date') border-red-400 @enderror">
                     @error('appointment_date')
                         <p class="text-red-600 text-sm mt-2 flex items-center">
                             <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
@@ -93,7 +93,7 @@
                         Preferred Time *
                     </label>
                     <input type="time" name="appointment_time" value="{{ old('appointment_time') }}" required 
-                           class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-white text-gray-900 text-base @error('appointment_time') border-red-400 @enderror">
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-white text-gray-900 text-base @error('appointment_time') border-red-400 @enderror">
                     @error('appointment_time')
                         <p class="text-red-600 text-sm mt-2 flex items-center">
                             <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
@@ -113,7 +113,7 @@
                     Reason for Visit
                 </label>
                 <textarea name="reason" rows="5" 
-                          class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-white text-gray-900 resize-none text-base @error('reason') border-red-400 @enderror"
+                          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all bg-white text-gray-900 resize-none text-base @error('reason') border-red-400 @enderror"
                           placeholder="Please describe your reason for the appointment (optional, but helpful for your doctor)...">{{ old('reason') }}</textarea>
                 @error('reason')
                     <p class="text-red-600 text-sm mt-2 flex items-center">
@@ -128,12 +128,10 @@
 
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-200">
-                <a href="{{ route('patient.appointments') }}" 
-                   class="px-6 py-4 text-gray-700 border-2 border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200 text-center">
+                <a href="{{ route('patient.appointments') }}" class="btn-secondary text-center">
                     <i class="fas fa-times mr-2"></i>Cancel
                 </a>
-                <button type="submit" 
-                        class="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg hover-soft transition-all duration-200">
+                <button type="submit" class="btn-primary">
                     <i class="fas fa-calendar-check mr-2"></i>Schedule Appointment
                 </button>
             </div>

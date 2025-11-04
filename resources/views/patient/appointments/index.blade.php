@@ -5,14 +5,13 @@
 @section('content')
 <div class="fade-in">
     <!-- Page Header -->
-    <div class="mb-8">
+    <div class="page-header">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">My Appointments</h1>
                 <p class="text-gray-600">View and manage your scheduled appointments</p>
             </div>
-            <a href="{{ route('patient.appointments.create') }}" 
-               class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg hover-soft">
+            <a href="{{ route('patient.appointments.create') }}" class="btn-primary inline-flex items-center">
                 <i class="fas fa-plus mr-2"></i>
                 Book New Appointment
             </a>
@@ -20,7 +19,7 @@
     </div>
 
     <!-- Search Bar -->
-    <div class="patient-card p-4 mb-6">
+    <div class="patient-card p-4 mb-6 bg-gray-50">
         <div class="flex items-center">
             <i class="fas fa-search text-gray-400 mr-3 text-lg"></i>
             <input type="text" id="search-appointments" placeholder="Search by doctor name or date..." 
@@ -30,7 +29,8 @@
 
     <!-- Appointments List -->
     @if($appointments->count() > 0)
-        <div class="space-y-4">
+        <div class="py-8 px-4 sm:px-6 lg:px-8 bg-white rounded-2xl shadow-sm">
+            <div class="space-y-4">
             @foreach($appointments as $appointment)
                 <div class="patient-card p-6 hover-soft">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -70,33 +70,32 @@
                         <div class="flex items-center space-x-3">
                             @if($appointment->status == 'pending')
                                 <form action="{{ route('patient.appointments.cancel', $appointment) }}" method="POST" 
-                                      onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                                      onsubmit="return confirm('Are you sure you want to cancel this appointment?');" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" 
-                                            class="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 font-medium transition-colors">
+                                    <button type="submit" class="btn-danger inline-flex items-center">
                                         <i class="fas fa-times mr-2"></i>Cancel
                                     </button>
                                 </form>
                             @endif
                             <a href="{{ route('patient.appointments.show', $appointment) }}" 
-                               class="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium transition-colors">
+                               class="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium transition-colors inline-flex items-center">
                                 <i class="fas fa-eye mr-2"></i>View
                             </a>
                         </div>
                     </div>
                 </div>
             @endforeach
+            </div>
         </div>
     @else
-        <div class="patient-card p-12 text-center">
-            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div class="empty-state">
+            <div class="empty-state-icon">
                 <i class="fas fa-calendar-times text-gray-400 text-4xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">No appointments yet</h3>
-            <p class="text-gray-600 mb-8">Schedule your first appointment with one of our healthcare providers</p>
-            <a href="{{ route('patient.appointments.create') }}" 
-               class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg hover-soft">
+            <h3>No appointments yet</h3>
+            <p>Schedule your first appointment with one of our healthcare providers</p>
+            <a href="{{ route('patient.appointments.create') }}" class="btn-primary inline-flex items-center">
                 <i class="fas fa-plus mr-2"></i>
                 Book Your First Appointment
             </a>
@@ -116,14 +115,13 @@
             
             if (data.length === 0) {
                 container.innerHTML = `
-                    <div class="patient-card p-12 text-center">
-                        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
                             <i class="fas fa-search text-gray-400 text-4xl"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">No appointments found</h3>
-                        <p class="text-gray-600 mb-8">Try adjusting your search terms</p>
-                        <a href="{{ route('patient.appointments.create') }}" 
-                           class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg">
+                        <h3>No appointments found</h3>
+                        <p>Try adjusting your search terms</p>
+                        <a href="{{ route('patient.appointments.create') }}" class="btn-primary inline-flex items-center">
                             <i class="fas fa-plus mr-2"></i>
                             Book Appointment
                         </a>

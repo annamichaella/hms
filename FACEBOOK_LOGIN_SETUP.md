@@ -30,14 +30,17 @@ This guide will walk you through setting up Facebook social login for the Hospit
 
 1. Go to **Settings** → **Basic** in the left sidebar
 2. Note down your **App ID** and **App Secret** (you'll need these later)
-3. Add **App Domains**: `localhost` (for development)
-4. Click "Save Changes"
+3. **Note**: `http://localhost` redirects are automatically allowed in development mode, so you don't need to configure them manually.
 
-4. Go to **Products** → **Facebook Login** → **Settings**
-5. Add your OAuth Redirect URIs:
-   - For development: `http://localhost:8000/auth/facebook/callback`
-   - For production: `https://yourdomain.com/auth/facebook/callback`
-6. Click "Save Changes"
+**For Development (localhost):**
+- No additional configuration needed! Facebook automatically allows `http://localhost` redirects during development.
+
+**For Production Only:**
+- Go to **Products** → **Facebook Login** → **Settings**
+- Add your production OAuth Redirect URI:
+  - `https://yourdomain.com/auth/facebook/callback`
+- Add your production domain to **App Domains**
+- Click "Save Changes"
 
 ## Step 4: Configure Your Laravel Application
 
@@ -105,10 +108,12 @@ These columns are nullable, so regular email/password users aren't affected.
 
 ### Issue: "Invalid OAuth Redirect URI"
 
-**Solution**: Make sure you've added the exact redirect URI in Facebook App Settings:
-- Check for `http` vs `https`
-- Check for trailing slashes
-- Ensure the URI matches exactly what's in your `.env` file
+**Solution**: 
+- **For development**: `http://localhost` redirects are automatically allowed - no configuration needed
+- **For production**: Make sure you've added the exact redirect URI in Facebook App Settings:
+  - Must use `https` (not `http`)
+  - Check for trailing slashes
+  - Ensure the URI matches exactly what's in your `.env` file
 
 ### Issue: "App Not Setup: This app is still in development mode"
 

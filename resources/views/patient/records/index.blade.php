@@ -5,13 +5,13 @@
 @section('content')
 <div class="fade-in">
     <!-- Page Header -->
-    <div class="mb-8">
+    <div class="page-header">
         <h1 class="text-3xl font-bold text-gray-800 mb-2">My Medical Records</h1>
         <p class="text-gray-600">View your complete medical history and health information</p>
     </div>
 
     @forelse($records as $record)
-        <div class="patient-card p-8 mb-6">
+        <div class="patient-card p-8 mb-6 bg-gray-50">
             <div class="flex items-center space-x-4 mb-6">
                 <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
                     <i class="fas fa-file-medical text-white text-2xl"></i>
@@ -92,13 +92,13 @@
             @endif
         </div>
     @empty
-        <div class="patient-card p-12 text-center">
-            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div class="empty-state">
+            <div class="empty-state-icon">
                 <i class="fas fa-file-medical text-gray-400 text-4xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">No medical records found</h3>
-            <p class="text-gray-600 mb-4">Your medical information will appear here once your healthcare provider adds it to your record.</p>
-            <p class="text-sm text-gray-500">If you believe this is an error, please contact your healthcare provider.</p>
+            <h3>No medical records found</h3>
+            <p>Your medical information will appear here once your healthcare provider adds it to your record.</p>
+            <p class="text-sm text-gray-500 mb-0">If you believe this is an error, please contact your healthcare provider.</p>
         </div>
     @endforelse
 </div>

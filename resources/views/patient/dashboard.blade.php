@@ -18,13 +18,11 @@
                     medical records, and health information all in one place.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 mb-8">
-                    <a href="{{ route('patient.appointments.create') }}" 
-                       class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200 text-center shadow-md hover:shadow-lg">
+                    <a href="{{ route('patient.appointments.create') }}" class="btn-primary inline-flex items-center">
                         <i class="fas fa-calendar-check mr-2"></i>
                         Book an Appointment
                     </a>
-                    <a href="{{ route('patient.appointments') }}" 
-                       class="border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition duration-200 text-center">
+                    <a href="{{ route('patient.appointments') }}" class="btn-outline inline-flex items-center">
                         <i class="fas fa-calendar-alt mr-2"></i>
                         View Appointments
                     </a>
@@ -86,17 +84,18 @@
     </section>
 
     <!-- Features/Quick Access Section -->
-    <section class="mb-16">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl sm:text-4xl font-bold mb-4">
-                Quick Access
-            </h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                Everything you need to manage your healthcare, all in one convenient place.
-            </p>
-        </div>
+    <section class="mb-16 py-12 px-4 sm:px-6 lg:px-8 bg-white rounded-2xl shadow-sm">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold mb-4">
+                    Quick Access
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Everything you need to manage your healthcare, all in one convenient place.
+                </p>
+            </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Appointments Card -->
             <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
                 <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
@@ -141,13 +140,15 @@
                     View Bills <i class="fas fa-arrow-right ml-2"></i>
                 </a>
             </div>
+            </div>
         </div>
     </section>
 
     <!-- Upcoming Appointments Section -->
-    <section class="mb-16">
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6">
+    <section class="mb-16 py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 rounded-2xl">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6">
                 <div class="flex items-center justify-between">
                     <h2 class="text-2xl font-bold text-white flex items-center">
                         <i class="fas fa-calendar-check mr-3"></i>
@@ -158,8 +159,8 @@
                         View All
                     </a>
                 </div>
-            </div>
-            <div class="p-8">
+                </div>
+                <div class="p-8">
                 @if($stats['upcoming_appointments']->count() > 0)
                     <div class="space-y-4">
                         @foreach($stats['upcoming_appointments'] as $appointment)
@@ -204,29 +205,30 @@
                         </div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">No upcoming appointments</h3>
                         <p class="text-gray-600 mb-6">Schedule your next visit with one of our healthcare providers</p>
-                        <a href="{{ route('patient.appointments.create') }}" 
-                           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg">
+                        <a href="{{ route('patient.appointments.create') }}" class="btn-primary inline-flex items-center">
                             <i class="fas fa-plus mr-2"></i>
                             Book Appointment
                         </a>
                     </div>
                 @endif
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Medical Records Summary Section -->
     @if($stats['patient_record'])
-    <section>
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-            <div class="bg-gradient-to-r from-green-500 to-green-600 px-8 py-6">
-                <h2 class="text-2xl font-bold text-white flex items-center">
-                    <i class="fas fa-file-medical mr-3"></i>
-                    Medical Records Summary
-                </h2>
-            </div>
-            <div class="p-8">
-                <div class="grid md:grid-cols-2 gap-6">
+    <section class="py-12 px-4 sm:px-6 lg:px-8 bg-white rounded-2xl shadow-sm">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-green-500 to-green-600 px-8 py-6">
+                    <h2 class="text-2xl font-bold text-white flex items-center">
+                        <i class="fas fa-file-medical mr-3"></i>
+                        Medical Records Summary
+                    </h2>
+                </div>
+                <div class="p-8">
+                    <div class="grid md:grid-cols-2 gap-6">
                     <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
                         <div class="flex items-center space-x-3 mb-3">
                             <i class="fas fa-tint text-red-500 text-xl"></i>
@@ -263,13 +265,14 @@
                         @endif
                     </div>
                     @endif
-                </div>
-                <div class="mt-6 text-center">
-                    <a href="{{ route('patient.records') }}" 
-                       class="inline-flex items-center text-green-600 hover:text-green-700 font-semibold">
-                        View Full Medical Records
-                        <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <a href="{{ route('patient.records') }}" 
+                           class="inline-flex items-center text-green-600 hover:text-green-700 font-semibold">
+                            View Full Medical Records
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
