@@ -136,7 +136,7 @@ class SocialAuthController extends Controller
             
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors([
-                'email' => 'Failed to authenticate with Google: ' . $e->getMessage(),
+                'email' => 'Failed to authenticate with Google. Please try again.',
             ]);
         }
     }

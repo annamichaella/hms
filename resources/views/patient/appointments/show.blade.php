@@ -1,98 +1,144 @@
-@extends('layouts.app')
+@extends('layouts.patient')
 
 @section('title', 'Appointment Details')
-@section('page-title', 'Appointment Details')
-
-@php
-    $currentRoute = request()->route()->getName();
-    $isActive = function($route) use ($currentRoute) {
-        return strpos($currentRoute, $route) === 0 
-            ? 'text-blue-700 bg-gradient-to-r from-blue-50 to-blue-100 border-l-3 border-blue-600 font-medium shadow-sm' 
-            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900';
-    };
-@endphp
-
-@section('sidebar')
-    <div class="px-2 space-y-0.5">
-        <a href="{{ route('patient.dashboard') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.dashboard') }} rounded-md transition-all duration-200 group">
-            <i class="fas fa-tachometer-alt mr-2.5 text-sm w-4 text-center"></i> Dashboard
-        </a>
-        <a href="{{ route('patient.appointments') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.appointments') }} rounded-md transition-all duration-200 group">
-            <i class="fas fa-calendar-check mr-2.5 text-sm w-4 text-center"></i> My Appointments
-        </a>
-        <a href="{{ route('patient.records') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.records') }} rounded-md transition-all duration-200 group">
-            <i class="fas fa-file-medical mr-2.5 text-sm w-4 text-center"></i> Medical Records
-        </a>
-        <a href="{{ route('patient.billing') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.billing') }} rounded-md transition-all duration-200 group">
-            <i class="fas fa-credit-card mr-2.5 text-sm w-4 text-center"></i> Billing
-        </a>
-    </div>
-    
-    <style>
-    .border-l-3 {
-        border-left-width: 3px;
-    }
-    </style>
-@endsection
 
 @section('content')
-<div class="mb-6">
-    <a href="{{ route('patient.appointments') }}" class="text-blue-600 hover:text-blue-800 mb-4 inline-flex items-center">
-        <i class="fas fa-arrow-left mr-2"></i> Back to Appointments
-    </a>
-</div>
-
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-        <h2 class="text-xl font-semibold text-gray-800">Appointment Details</h2>
-    </div>
-    
-    <div class="p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="fade-in">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <div class="flex items-center space-x-4 mb-4">
+            <a href="{{ route('patient.appointments') }}" 
+               class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md hover:shadow-lg transition-shadow text-gray-600 hover:text-blue-600">
+                <i class="fas fa-arrow-left"></i>
+            </a>
             <div>
-                <h3 class="text-sm font-medium text-gray-500 mb-2">Doctor Information</h3>
-                <div class="space-y-2">
-                    <p class="text-gray-900"><strong>Name:</strong> {{ $appointment->doctor->full_name ?? 'N/A' }}</p>
-                    <p class="text-gray-600"><strong>Email:</strong> {{ $appointment->doctor->email ?? 'N/A' }}</p>
+                <h1 class="text-3xl font-bold text-gray-800">Appointment Details</h1>
+                <p class="text-gray-600">View your appointment information</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="patient-card p-8">
+        <!-- Doctor Information -->
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100 mb-6">
+            <div class="flex items-center space-x-4 mb-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-user-md text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">Dr. {{ $appointment->doctor->full_name ?? 'Unknown Doctor' }}</h2>
                     @if($appointment->doctor->specialization)
-                    <p class="text-gray-600"><strong>Specialization:</strong> {{ $appointment->doctor->specialization }}</p>
+                        <p class="text-gray-600">{{ $appointment->doctor->specialization }}</p>
                     @endif
                 </div>
             </div>
-            
-            <div>
-                <h3 class="text-sm font-medium text-gray-500 mb-2">Appointment Information</h3>
-                <div class="space-y-2">
-                    <p class="text-gray-900"><strong>Date:</strong> {{ $appointment->appointment_date->format('F d, Y') }}</p>
-                    <p class="text-gray-600"><strong>Time:</strong> {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</p>
-                    <p class="text-gray-600">
-                        <strong>Status:</strong> 
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                            @if($appointment->status == 'pending') bg-yellow-100 text-yellow-800
-                            @elseif($appointment->status == 'confirmed') bg-green-100 text-green-800
-                            @elseif($appointment->status == 'completed') bg-blue-100 text-blue-800
-                            @else bg-red-100 text-red-800
-                            @endif">
-                            {{ ucfirst($appointment->status) }}
-                        </span>
-                    </p>
+            @if($appointment->doctor->email)
+                <div class="flex items-center text-gray-600">
+                    <i class="fas fa-envelope mr-2 text-blue-500"></i>
+                    {{ $appointment->doctor->email }}
+                </div>
+            @endif
+        </div>
+
+        <!-- Appointment Information -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-2xl border border-green-100">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
+                        <i class="far fa-calendar-alt text-white text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">Appointment Date</h3>
+                </div>
+                <p class="text-2xl font-bold text-gray-800">{{ $appointment->appointment_date->format('F d, Y') }}</p>
+                <p class="text-sm text-gray-600 mt-2">{{ $appointment->appointment_date->format('l') }}</p>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-2xl border border-purple-100">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
+                        <i class="far fa-clock text-white text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800">Appointment Time</h3>
+                </div>
+                <p class="text-2xl font-bold text-gray-800">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</p>
+                <p class="text-sm text-gray-600 mt-2">Please arrive 15 minutes early</p>
+            </div>
+        </div>
+
+        <!-- Status Card -->
+        <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-2xl border border-amber-100 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Appointment Status</h3>
+                    <span class="inline-block px-4 py-2 text-sm font-semibold rounded-full
+                        @if($appointment->status == 'pending') bg-yellow-100 text-yellow-700
+                        @elseif($appointment->status == 'confirmed') bg-green-100 text-green-700
+                        @elseif($appointment->status == 'completed') bg-blue-100 text-blue-700
+                        @else bg-red-100 text-red-700
+                        @endif">
+                        {{ ucfirst($appointment->status) }}
+                    </span>
+                </div>
+                <div class="w-16 h-16 rounded-full flex items-center justify-center
+                    @if($appointment->status == 'pending') bg-yellow-100
+                    @elseif($appointment->status == 'confirmed') bg-green-100
+                    @elseif($appointment->status == 'completed') bg-blue-100
+                    @else bg-red-100
+                    @endif">
+                    <i class="fas 
+                        @if($appointment->status == 'pending') fa-clock text-yellow-600
+                        @elseif($appointment->status == 'confirmed') fa-check-circle text-green-600
+                        @elseif($appointment->status == 'completed') fa-check-double text-blue-600
+                        @else fa-times-circle text-red-600
+                        @endif text-2xl"></i>
                 </div>
             </div>
         </div>
-        
+
+        <!-- Reason for Visit -->
         @if($appointment->reason)
-        <div class="mt-6">
-            <h3 class="text-sm font-medium text-gray-500 mb-2">Reason for Visit</h3>
-            <p class="text-gray-900">{{ $appointment->reason }}</p>
+        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                <i class="fas fa-sticky-note text-blue-500 mr-2"></i>
+                Reason for Visit
+            </h3>
+            <p class="text-gray-700 leading-relaxed">{{ $appointment->reason }}</p>
         </div>
         @endif
-        
+
+        <!-- Assigned Nurse -->
         @if($appointment->nurse)
-        <div class="mt-6">
-            <h3 class="text-sm font-medium text-gray-500 mb-2">Assigned Nurse</h3>
-            <p class="text-gray-900">{{ $appointment->nurse->full_name ?? 'N/A' }}</p>
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-2xl border border-indigo-100">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-user-nurse text-white"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">Assigned Nurse</h3>
+                    <p class="text-gray-700">{{ $appointment->nurse->full_name ?? 'N/A' }}</p>
+                </div>
+            </div>
         </div>
         @endif
+
+        <!-- Actions -->
+        <div class="mt-8 flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+            @if($appointment->status == 'pending')
+                <form action="{{ route('patient.appointments.cancel', $appointment) }}" method="POST" 
+                      onsubmit="return confirm('Are you sure you want to cancel this appointment?');" class="flex-1">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" 
+                            class="w-full px-6 py-3 bg-red-50 text-red-600 border-2 border-red-200 rounded-xl font-semibold hover:bg-red-100 transition-all duration-200">
+                        <i class="fas fa-times mr-2"></i>Cancel Appointment
+                    </button>
+                </form>
+            @endif
+            <a href="{{ route('patient.appointments') }}" 
+               class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200 text-center">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Appointments
+            </a>
+        </div>
     </div>
 </div>
 @endsection

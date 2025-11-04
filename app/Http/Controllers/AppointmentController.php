@@ -65,6 +65,12 @@ class AppointmentController extends Controller
         $doctors = User::where('role', 'doctor')->orderBy('fname')->get();
         $user = Auth::user();
         
+        // If no doctors available, redirect back with error
+        if ($doctors->isEmpty() && $user->role === 'patient') {
+            return redirect()->route('patient.appointments')
+                ->with('error', 'No doctors are currently available. Please contact the administrator.');
+        }
+        
         // Use different views based on role
         if ($user->role === 'patient') {
             return view('patient.appointments.create', compact('doctors'));
@@ -78,44 +84,87 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'doctor_id' => 'required|exists:users,id',
+        $user = Auth::user();
+        $isPatient = $user->role === 'patient';
+        
+        $validator = \Validator::make($request->all(), [
+            'doctor_id' => [
+                'required',
+                'exists:users,id',
+                function ($attribute, $value, $fail) {
+                    $doctor = User::where('id', $value)->where('role', 'doctor')->first();
+                    if (!$doctor) {
+                        $fail('The selected doctor is invalid.');
+                    }
+                },
+            ],
             'appointment_date' => 'required|date|after_or_equal:today',
             'appointment_time' => 'required',
             'reason' => 'nullable|string|max:500',
+        ], [
+            'doctor_id.required' => 'Please select a doctor.',
+            'doctor_id.exists' => 'The selected doctor is invalid.',
+            'appointment_date.required' => 'Please select an appointment date.',
+            'appointment_date.after_or_equal' => 'The appointment date must be today or a future date.',
+            'appointment_time.required' => 'Please select an appointment time.',
         ]);
 
-        $patientId = Auth::user()->role === 'patient' ? Auth::id() : $request->patient_id;
+        // For patients, redirect to create page on validation failure
+        if ($validator->fails()) {
+            if ($isPatient) {
+                return redirect()->route('patient.appointments.create')
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-        $appointment = Appointment::create([
-            'patient_id' => $patientId,
-            'doctor_id' => $request->doctor_id,
-            'appointment_date' => $request->appointment_date,
-            'appointment_time' => $request->appointment_time,
-            'reason' => $request->reason,
-            'status' => 'pending',
-        ]);
+        $patientId = $isPatient ? Auth::id() : $request->patient_id;
 
-        if ($request->expectsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Appointment scheduled successfully!',
-                'data' => $appointment->load(['patient', 'doctor'])
+        try {
+            $appointment = Appointment::create([
+                'patient_id' => $patientId,
+                'doctor_id' => $request->doctor_id,
+                'appointment_date' => $request->appointment_date,
+                'appointment_time' => $request->appointment_time,
+                'reason' => $request->reason,
+                'status' => 'pending',
             ]);
-        }
 
-        $user = Auth::user();
-        $routeName = 'appointments.index';
-        if ($user->role === 'patient') {
-            $routeName = 'patient.appointments';
-        } elseif ($user->role === 'admin') {
-            $routeName = 'admin.appointments.index';
-        } elseif ($user->role === 'staff') {
-            $routeName = 'staff.appointments.index';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Appointment scheduled successfully!',
+                    'data' => $appointment->load(['patient', 'doctor'])
+                ]);
+            }
+
+            $routeName = 'appointments.index';
+            if ($user->role === 'patient') {
+                $routeName = 'patient.appointments';
+            } elseif ($user->role === 'admin') {
+                $routeName = 'admin.appointments.index';
+            } elseif ($user->role === 'staff') {
+                $routeName = 'staff.appointments.index';
+            }
+            
+            return redirect()->route($routeName)
+                ->with('success', 'Appointment scheduled successfully!');
+        } catch (\Exception $e) {
+            $user = Auth::user();
+            // For patients, always redirect to create page on error
+            if ($user->role === 'patient') {
+                return redirect()->route('patient.appointments.create')
+                    ->withInput()
+                    ->withErrors(['error' => 'Failed to create appointment. Please try again.']);
+            }
+            
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['error' => 'Failed to create appointment. Please try again.']);
         }
-        
-        return redirect()->route($routeName)
-            ->with('success', 'Appointment scheduled successfully!');
     }
 
     /**

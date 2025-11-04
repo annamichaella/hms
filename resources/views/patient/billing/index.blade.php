@@ -1,93 +1,131 @@
-@extends('layouts.app')
+@extends('layouts.patient')
 
 @section('title', 'Billing')
-@section('page-title', 'My Bills')
-
-@php
-    $currentRoute = request()->route()->getName();
-    $isActive = function($route) use ($currentRoute) {
-        return strpos($currentRoute, $route) === 0 
-            ? 'text-blue-700 bg-gradient-to-r from-blue-50 to-blue-100 border-l-3 border-blue-600 font-medium shadow-sm' 
-            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900';
-    };
-@endphp
-
-@section('sidebar')
-    <div class="px-2 space-y-0.5">
-        <a href="{{ route('patient.dashboard') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.dashboard') }} rounded-md transition-all duration-200 group">
-            <i class="fas fa-tachometer-alt mr-2.5 text-sm w-4 text-center"></i> Dashboard
-        </a>
-        <a href="{{ route('patient.appointments') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.appointments') }} rounded-md transition-all duration-200 group">
-            <i class="fas fa-calendar-check mr-2.5 text-sm w-4 text-center"></i> My Appointments
-        </a>
-        <a href="{{ route('patient.records') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.records') }} rounded-md transition-all duration-200 group">
-            <i class="fas fa-file-medical mr-2.5 text-sm w-4 text-center"></i> Medical Records
-        </a>
-        <a href="{{ route('patient.billing') }}" class="flex items-center px-3 py-2.5 text-sm {{ $isActive('patient.billing') }} rounded-md transition-all duration-200 group">
-            <i class="fas fa-credit-card mr-2.5 text-sm w-4 text-center"></i> Billing
-        </a>
-    </div>
-    
-    <style>
-    .border-l-3 {
-        border-left-width: 3px;
-    }
-    </style>
-@endsection
 
 @section('content')
-    <div class="mb-6">
-        <h1 class="text-xl font-bold text-gray-800">My Bills</h1>
-        <p class="text-gray-600">View your billing history and invoices</p>
+<div class="fade-in">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">My Bills & Payments</h1>
+        <p class="text-gray-600">View your billing history and manage payments</p>
     </div>
 
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <table class="w-full">
-            <thead class="bg-gray-50 border-b border-gray-200">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doctor</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Billing Date</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Due Date</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                @forelse($bills as $bill)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $bill->service }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ $bill->doctor_name ?? 'N/A' }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            ${{ number_format($bill->amount, 2) }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ $bill->billing_date->format('M d, Y') }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ $bill->due_date ? $bill->due_date->format('M d, Y') : 'N/A' }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                @if($bill->status == 'paid') bg-green-100 text-green-800
-                                @elseif($bill->status == 'pending') bg-yellow-100 text-yellow-800
-                                @elseif($bill->status == 'partial') bg-blue-100 text-blue-800
-                                @else bg-red-100 text-red-800
-                                @endif">
-                                {{ ucfirst($bill->status) }}
-                            </span>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">No bills found</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+    @if($bills->count() > 0)
+        <!-- Billing Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            @php
+                $totalBills = $bills->count();
+                $paidBills = $bills->where('status', 'paid')->count();
+                $pendingBills = $bills->where('status', 'pending')->count();
+                $totalAmount = $bills->sum('amount');
+                $paidAmount = $bills->where('status', 'paid')->sum('amount');
+                $pendingAmount = $bills->where('status', 'pending')->sum('amount');
+            @endphp
+            
+            <div class="patient-card p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-blue-700 mb-1">Total Bills</p>
+                        <p class="text-2xl font-bold text-gray-800">${{ number_format($totalAmount, 2) }}</p>
+                        <p class="text-xs text-gray-600 mt-2">{{ $totalBills }} bill(s)</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-file-invoice-dollar text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="patient-card p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-green-700 mb-1">Paid</p>
+                        <p class="text-2xl font-bold text-gray-800">${{ number_format($paidAmount, 2) }}</p>
+                        <p class="text-xs text-gray-600 mt-2">{{ $paidBills }} bill(s)</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-check-circle text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="patient-card p-6 bg-gradient-to-r from-yellow-50 to-amber-50 border-2 border-yellow-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-yellow-700 mb-1">Pending</p>
+                        <p class="text-2xl font-bold text-gray-800">${{ number_format($pendingAmount, 2) }}</p>
+                        <p class="text-xs text-gray-600 mt-2">{{ $pendingBills }} bill(s)</p>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-clock text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bills List -->
+        <div class="space-y-4">
+            @foreach($bills as $bill)
+                <div class="patient-card p-6 hover-soft">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex items-start space-x-4 flex-1">
+                            <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-md flex-shrink-0">
+                                <i class="fas fa-receipt text-white text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-lg font-semibold text-gray-800">{{ $bill->service }}</h3>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full
+                                        @if($bill->status == 'paid') bg-green-100 text-green-700
+                                        @elseif($bill->status == 'pending') bg-yellow-100 text-yellow-700
+                                        @elseif($bill->status == 'partial') bg-blue-100 text-blue-700
+                                        @else bg-red-100 text-red-700
+                                        @endif">
+                                        {{ ucfirst($bill->status) }}
+                                    </span>
+                                </div>
+                                @if($bill->doctor_name)
+                                    <p class="text-gray-600 mb-2">
+                                        <i class="fas fa-user-md text-blue-500 mr-2"></i>
+                                        Dr. {{ $bill->doctor_name }}
+                                    </p>
+                                @endif
+                                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                                    <span class="flex items-center">
+                                        <i class="far fa-calendar mr-2 text-blue-500"></i>
+                                        Billed: {{ $bill->billing_date->format('M d, Y') }}
+                                    </span>
+                                    @if($bill->due_date)
+                                        <span class="flex items-center">
+                                            <i class="fas fa-calendar-check mr-2 text-blue-500"></i>
+                                            Due: {{ $bill->due_date->format('M d, Y') }}
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end space-y-2">
+                            <div class="text-right">
+                                <p class="text-2xl font-bold text-gray-800">${{ number_format($bill->amount, 2) }}</p>
+                                <p class="text-xs text-gray-500">Total Amount</p>
+                            </div>
+                            @if($bill->status == 'pending')
+                                <button class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 font-medium transition-all shadow-md hover-soft">
+                                    <i class="fas fa-credit-card mr-2"></i>Pay Now
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="patient-card p-12 text-center">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-receipt text-gray-400 text-4xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">No bills found</h3>
+            <p class="text-gray-600">Your billing information will appear here once you have any medical services or appointments.</p>
+        </div>
+    @endif
+</div>
 @endsection
