@@ -14,7 +14,7 @@
                 <h1 class="text-xl font-bold text-gray-800">Billing Management</h1>
                 <p class="text-gray-600">Manage patient billing and invoices</p>
             </div>
-            <a href="{{ route('admin.billings.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <a href="{{ route('admin.billings.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus mr-2"></i>New Bill
             </a>
         </div>
@@ -22,10 +22,9 @@
 
     <!-- Search Bar -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-        <div class="flex items-center">
-            <i class="fas fa-search text-gray-400 mr-3"></i>
-            <input type="text" id="search-billings" placeholder="Search by patient name, service, or amount..." 
-                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-billings" placeholder="Search by patient name, service, or amount..." class="search-input">
         </div>
     </div>
 

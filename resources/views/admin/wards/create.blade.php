@@ -14,9 +14,7 @@
                 <h1 class="text-xl font-bold text-gray-800">Add New Ward</h1>
                 <p class="text-gray-600">Create a new hospital ward</p>
             </div>
-            <a href="{{ route('admin.wards.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-                <i class="fas fa-arrow-left mr-2"></i>Back to Wards
-            </a>
+            @include('partials.back-button', ['href' => route('admin.wards.index'), 'label' => 'Back to Wards'])
         </div>
     </div>
 
@@ -87,12 +85,8 @@
             </div>
             
             <div class="flex justify-end space-x-3 mt-6">
-                <a href="{{ route('admin.wards.index') }}" 
-                   class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Cancel
-                </a>
-                <button type="submit" 
-                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <a href="{{ route('admin.wards.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save mr-2"></i>Save Ward
                 </button>
             </div>

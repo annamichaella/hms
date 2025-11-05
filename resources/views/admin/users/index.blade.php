@@ -14,7 +14,7 @@
                 <h1 class="text-xl font-bold text-gray-800">Users Management</h1>
                 <p class="text-gray-600">Manage all system users and their permissions</p>
             </div>
-            <button id="add-user-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <button id="add-user-btn" class="btn btn-primary">
                 <i class="fas fa-plus mr-2"></i>Add New User
             </button>
         </div>
@@ -23,12 +23,11 @@
     <!-- Search and Filter -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <div class="flex items-center space-x-4">
-            <div class="flex items-center flex-1">
-                <i class="fas fa-search text-gray-400 mr-3"></i>
-                <input type="text" id="search-users" placeholder="Search users by name or email..." 
-                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="search-bar flex-1">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-users" placeholder="Search users by name or email..." class="search-input">
             </div>
-            <select id="role-filter" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select id="role-filter" class="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">All Roles</option>
                 <option value="admin">Admin</option>
                 <option value="doctor">Doctor</option>
@@ -91,70 +90,74 @@
     </div>
 
     <!-- Add/Edit User Modal -->
-    <div id="user-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg p-6 w-full max-w-md">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="modal-title" class="text-lg font-semibold">Add New User</h3>
+    <div id="user-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden modal-overlay">
+        <div class="bg-white w-full h-full md:h-auto md:max-h-[80vh] md:max-w-xl md:rounded-lg md:p-4 p-3 overflow-hidden text-sm flex flex-col modal-panel">
+            <div class="flex justify-between items-center md:mb-3 mb-2 md:static sticky top-0 bg-white z-10 pt-1">
+                <h3 id="modal-title" class="text-base font-semibold">Add New User</h3>
                 <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <form id="user-form" method="POST">
+            <form id="user-form" method="POST" class="flex flex-col flex-1 min-h-0">
                 @csrf
                 <input type="hidden" id="user-id" name="id">
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-3 overflow-y-auto pr-2 md:max-h-[55vh] flex-1 min-h-0">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">First Name *</label>
                             <input type="text" id="fname" name="fname" required 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                   class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Last Name *</label>
                             <input type="text" id="lname" name="lname" required 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                   class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Email *</label>
+                            <input type="email" id="email" name="email" required 
+                                   class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Password <span id="pwd-required">*</span></label>
+                            <input type="password" id="password" name="password" minlength="6"
+                                   class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Role *</label>
+                            <select id="role" name="role" required 
+                                    class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="doctor">Doctor</option>
+                                <option value="nurse">Nurse</option>
+                                <option value="staff">Staff</option>
+                                <option value="patient">Patient</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Phone</label>
+                            <input type="tel" id="phone" name="phone" 
+                                   class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                        <input type="email" id="email" name="email" required 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Password <span id="pwd-required">*</span></label>
-                        <input type="password" id="password" name="password" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Role *</label>
-                        <select id="role" name="role" required 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">Select Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="doctor">Doctor</option>
-                            <option value="nurse">Nurse</option>
-                            <option value="staff">Staff</option>
-                            <option value="patient">Patient</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                        <input type="tel" id="phone" name="phone" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Address</label>
                         <textarea id="address" name="address" rows="2" 
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                  class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
-                    <div class="flex justify-end space-x-3 pt-4">
-                        <button type="button" onclick="closeModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                            Cancel
-                        </button>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                            Save
-                        </button>
-                    </div>
+                </div>
+                <div class="flex justify-end space-x-2.5 pt-3 mt-3 border-t border-gray-100 md:static sticky bottom-0 bg-white">
+                    <button type="button" onclick="closeModal()" class="btn btn-secondary">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
                 </div>
             </form>
         </div>
@@ -324,17 +327,32 @@
                 },
                 body: formData
             })
-            .then(res => res.json())
+            .then(async (res) => {
+                if (!res.ok) {
+                    let message = 'Operation failed';
+                    try {
+                        const err = await res.json();
+                        if (err && err.errors) {
+                            const firstKey = Object.keys(err.errors)[0];
+                            if (firstKey) message = err.errors[firstKey][0] || message;
+                        } else if (err && err.message) {
+                            message = err.message;
+                        }
+                    } catch (_) {}
+                    throw new Error(message);
+                }
+                return res.json();
+            })
             .then(data => {
                 if (data.success) {
                     showNotification(id ? 'User updated successfully' : 'User created successfully', 'success');
-                    setTimeout(() => location.reload(), 1000);
+                    setTimeout(() => location.reload(), 800);
                 } else {
                     showNotification(data.error || 'Operation failed', 'error');
                 }
             })
             .catch(error => {
-                showNotification('An error occurred. Please try again.', 'error');
+                showNotification(error.message || 'An error occurred. Please try again.', 'error');
             });
         });
     </script>

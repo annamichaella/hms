@@ -14,7 +14,7 @@
                 <h1 class="text-xl font-bold text-gray-800">Ward Management</h1>
                 <p class="text-gray-600">Manage hospital wards and bed assignments</p>
             </div>
-            <a href="{{ route('admin.wards.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <a href="{{ route('admin.wards.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus mr-2"></i>Add Ward
             </a>
         </div>

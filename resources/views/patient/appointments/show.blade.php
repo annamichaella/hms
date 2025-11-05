@@ -133,9 +133,7 @@
                     </button>
                 </form>
             @endif
-            <a href="{{ route('patient.appointments') }}" class="btn-secondary text-center">
-                <i class="fas fa-arrow-left mr-2"></i>Back to Appointments
-            </a>
+            @include('partials.back-button', ['href' => route('patient.appointments'), 'label' => 'Back to Appointments'])
         </div>
     </div>
 </div>

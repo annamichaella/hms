@@ -61,15 +61,15 @@ class UserController extends Controller
 
         $user = User::create([
             'fname' => $request->fname,
-            'mname' => $request->mname,
+            'mname' => $request->input('mname', ''),
             'lname' => $request->lname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'phone' => $request->phone,
             'address' => $request->address,
-            'specialization' => $request->specialization,
-            'department' => $request->department,
+            'specialization' => $request->input('specialization', ''),
+            'department' => $request->input('department', ''),
         ]);
 
         if ($request->expectsJson()) {

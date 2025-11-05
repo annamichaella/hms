@@ -44,9 +44,7 @@
             <h1 class="text-xl font-bold text-gray-800 tracking-tight">Create New Bill</h1>
             <p class="text-gray-600 text-sm mt-1">Fill in the details to create a new billing record</p>
         </div>
-        <a href="{{ route('staff.billings.index') }}" class="bg-gray-100 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium">
-            <i class="fas fa-arrow-left mr-2"></i>Back to Billings
-        </a>
+        @include('partials.back-button', ['href' => route('staff.billings.index'), 'label' => 'Back to Billings'])
     </div>
 
     <div class="bg-white rounded-lg shadow-professional border border-gray-100 p-6">
@@ -124,10 +122,8 @@
                 @enderror
             </div>
             <div class="mt-6 flex justify-end space-x-3">
-                <a href="{{ route('staff.billings.index') }}" class="px-4 py-2.5 text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium">
-                    Cancel
-                </a>
-                <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2.5 rounded-lg hover:from-blue-700 hover:to-blue-800 shadow-md hover:shadow-lg transition-all duration-200 font-medium">
+                <a href="{{ route('staff.billings.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save mr-2"></i>Create Bill
                 </button>
             </div>

@@ -43,7 +43,7 @@
             <h1 class="text-3xl font-bold text-gray-800 mb-2">Ward Assignments</h1>
             <p class="text-gray-600">Manage patient bed assignments and discharges</p>
         </div>
-        <button onclick="openAssignModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+        <button onclick="openAssignModal()" class="btn btn-primary">
             <i class="fas fa-plus mr-2"></i>Assign Patient
         </button>
     </div>
@@ -144,13 +144,13 @@
 </div>
 
 <!-- Assign Patient Modal -->
-<div id="assignModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div class="px-6 py-4 border-b border-gray-200">
+<div id="assignModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 modal-overlay">
+    <div class="w-full h-full md:h-auto md:max-h-[80vh] md:max-w-md md:rounded-lg p-0 overflow-hidden flex items-center justify-center">
+        <div class="bg-white w-full h-full md:h-auto md:max-h-[80vh] md:max-w-md md:rounded-lg modal-panel flex flex-col">
+            <div class="px-4 py-3 border-b border-gray-200 md:static sticky top-0 bg-white z-10">
                 <h3 class="text-base font-medium text-gray-900">Assign Patient to Bed</h3>
             </div>
-            <form id="assignForm" class="p-6">
+            <form id="assignForm" class="p-4 flex-1 overflow-y-auto text-sm">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Select Bed</label>
                     <select id="bedSelect" name="bed_id" required 
@@ -173,18 +173,17 @@
                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                               placeholder="Enter reason for admission..."></textarea>
                 </div>
-                
-                <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="closeAssignModal()" 
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
-                        Cancel
-                    </button>
-                    <button type="submit" 
-                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
-                        Assign
-                    </button>
-                </div>
             </form>
+            <div class="flex justify-end space-x-2.5 px-4 py-3 border-t border-gray-200 md:static sticky bottom-0 bg-white">
+                <button type="button" onclick="closeAssignModal()" 
+                        class="btn btn-secondary">
+                    Cancel
+                </button>
+                <button type="submit" form="assignForm"
+                        class="btn btn-primary">
+                    Assign
+                </button>
+            </div>
         </div>
     </div>
 </div>

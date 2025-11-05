@@ -50,10 +50,9 @@
 
 <!-- Search Bar -->
 <div class="bg-white rounded-lg shadow-professional border border-gray-100 p-4 mb-6">
-    <div class="flex items-center">
-        <i class="fas fa-search text-gray-400 mr-3"></i>
-        <input type="text" id="search-assignments" placeholder="Search by patient name, doctor name, or date..." 
-               class="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+    <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" id="search-assignments" placeholder="Search by patient name, doctor name, or date..." class="search-input">
     </div>
 </div>
 
@@ -180,11 +179,11 @@
             <!-- Action Buttons -->
             <div class="flex space-x-2">
                 <button data-id="{{ $apt->id }}" 
-                        class="assign-btn flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors">
+                        class="assign-btn flex-1 btn btn-primary">
                     <i class="fas fa-user-plus mr-2"></i>Assign
                 </button>
                 <button data-id="{{ $apt->id }}" 
-                        class="view-btn px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors">
+                        class="view-btn btn btn-secondary">
                     <i class="fas fa-eye"></i>
                 </button>
             </div>
@@ -244,19 +243,19 @@
 @endpush
 
 <!-- Assignment Modal -->
-<div id="assignmentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900">Assign Staff</h3>
+<div id="assignmentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 modal-overlay">
+    <div class="w-full h-full md:h-auto md:max-h-[80vh] md:max-w-md md:rounded-lg p-0 overflow-hidden flex items-center justify-center">
+        <div class="bg-white w-full h-full md:h-auto md:max-h-[80vh] md:max-w-md md:rounded-lg modal-panel flex flex-col">
+            <div class="px-4 py-3 border-b border-gray-200 md:static sticky top-0 bg-white z-10">
+                <h3 class="text-base font-semibold text-gray-900">Assign Staff</h3>
             </div>
             
-            <div class="p-6">
-                <form id="assignmentForm">
+            <div class="p-4 flex-1 overflow-y-auto">
+                <form id="assignmentForm" class="text-sm">
                     <input type="hidden" id="modalAppointmentId" name="appointment_id">
                     
                     <!-- Assignment Type -->
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Assignment Type</label>
                         <select id="assignmentType" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select assignment type...</option>
@@ -272,25 +271,26 @@
                     </div>
                     
                     <!-- Notes -->
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
                         <textarea id="assignmentNotes" name="notes" rows="3" 
                                   class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                   placeholder="Add any notes about this assignment..."></textarea>
                     </div>
                     
-                    <!-- Buttons -->
-                    <div class="flex justify-end space-x-3">
-                        <button type="button" onclick="closeAssignmentModal()" 
-                                class="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300">
-                            Cancel
-                        </button>
-                        <button type="submit" 
-                                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                            Assign
-                        </button>
-                    </div>
                 </form>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="flex justify-end space-x-2.5 px-4 py-3 border-t border-gray-200 md:static sticky bottom-0 bg-white">
+                <button type="button" onclick="closeAssignmentModal()" 
+                        class="btn btn-secondary">
+                    Cancel
+                </button>
+                <button type="submit" form="assignmentForm"
+                        class="btn btn-primary">
+                    Assign
+                </button>
             </div>
         </div>
     </div>
