@@ -16,7 +16,16 @@ class SocialAuthController extends Controller
      */
     public function redirectToFacebook()
     {
-        return Socialite::driver('facebook')->redirect();
+        // Check if Facebook credentials are configured
+        if (empty(config('services.facebook.client_id'))) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Facebook login is not configured. Please contact the administrator.',
+            ]);
+        }
+
+        return Socialite::driver('facebook')
+            ->scopes(['email', 'public_profile'])
+            ->redirect();
     }
 
     /**
@@ -26,6 +35,23 @@ class SocialAuthController extends Controller
     {
         try {
             $facebookUser = Socialite::driver('facebook')->user();
+            
+            // Validate that we have required data
+            if (!$facebookUser->getId()) {
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Failed to retrieve Facebook user information.',
+                ]);
+            }
+
+            // Get email - Facebook might not always provide it
+            $email = $facebookUser->getEmail();
+            
+            // If email is missing, we can't create/login user
+            if (!$email) {
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Email permission is required. Please authorize email access when logging in with Facebook.',
+                ]);
+            }
             
             // Check if user exists by provider
             $user = User::where('provider', 'facebook')
@@ -37,7 +63,7 @@ class SocialAuthController extends Controller
                 Auth::login($user);
             } else {
                 // Check if user exists by email
-                $existingUser = User::where('email', $facebookUser->getEmail())->first();
+                $existingUser = User::where('email', $email)->first();
 
                 if ($existingUser) {
                     // Link Facebook account to existing user
@@ -47,14 +73,14 @@ class SocialAuthController extends Controller
                     Auth::login($existingUser);
                 } else {
                     // Create new user from Facebook data
-                    $name = $facebookUser->getName();
+                    $name = $facebookUser->getName() ?? 'User';
                     $nameParts = $this->parseName($name);
 
                     $user = User::create([
-                        'fname' => $nameParts['first'],
+                        'fname' => $nameParts['first'] ?: 'User',
                         'mname' => $nameParts['middle'],
                         'lname' => $nameParts['last'],
-                        'email' => $facebookUser->getEmail(),
+                        'email' => $email,
                         'password' => bcrypt(Str::random(16)), // Random password for social login
                         'role' => 'patient', // Default role
                         'provider' => 'facebook',
@@ -69,7 +95,83 @@ class SocialAuthController extends Controller
             // Redirect based on user role
             return $this->redirectBasedOnRole(Auth::user());
             
+        } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
+            // InvalidStateException occurs when the OAuth state parameter doesn't match
+            // This can happen if the session expired or was lost between redirect and callback
+            \Log::warning('Facebook InvalidStateException: ' . $e->getMessage());
+            
+            // Try to get user without state (stateless mode)
+            try {
+                $facebookUser = Socialite::driver('facebook')->stateless()->user();
+                
+                // Validate that we have required data
+                if (!$facebookUser->getId()) {
+                    return redirect()->route('login')->withErrors([
+                        'email' => 'Failed to retrieve Facebook user information.',
+                    ]);
+                }
+
+                // Get email - Facebook might not always provide it
+                $email = $facebookUser->getEmail();
+                
+                // If email is missing, we can't create/login user
+                if (!$email) {
+                    return redirect()->route('login')->withErrors([
+                        'email' => 'Email permission is required. Please authorize email access when logging in with Facebook.',
+                    ]);
+                }
+                
+                // Check if user exists by provider
+                $user = User::where('provider', 'facebook')
+                            ->where('provider_id', $facebookUser->getId())
+                            ->first();
+
+                if ($user) {
+                    Auth::login($user);
+                } else {
+                    // Check if user exists by email
+                    $existingUser = User::where('email', $email)->first();
+
+                    if ($existingUser) {
+                        // Link Facebook account to existing user
+                        $existingUser->provider = 'facebook';
+                        $existingUser->provider_id = $facebookUser->getId();
+                        $existingUser->save();
+                        Auth::login($existingUser);
+                    } else {
+                        // Create new user from Facebook data
+                        $name = $facebookUser->getName() ?? 'User';
+                        $nameParts = $this->parseName($name);
+
+                        $user = User::create([
+                            'fname' => $nameParts['first'] ?: 'User',
+                            'mname' => $nameParts['middle'],
+                            'lname' => $nameParts['last'],
+                            'email' => $email,
+                            'password' => bcrypt(Str::random(16)),
+                            'role' => 'patient',
+                            'provider' => 'facebook',
+                            'provider_id' => $facebookUser->getId(),
+                            'email_verified_at' => now(),
+                        ]);
+
+                        Auth::login($user);
+                    }
+                }
+
+                return $this->redirectBasedOnRole(Auth::user());
+            } catch (\Exception $statelessException) {
+                // If stateless also fails, return error
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Facebook authentication session expired. Please try logging in again.',
+                ]);
+            }
         } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Facebook login error: ' . $e->getMessage(), [
+                'exception' => $e,
+            ]);
+
             return redirect()->route('login')->withErrors([
                 'email' => 'Failed to authenticate with Facebook. Please try again.',
             ]);
@@ -136,7 +238,7 @@ class SocialAuthController extends Controller
             
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors([
-                'email' => 'Failed to authenticate with Google: ' . $e->getMessage(),
+                'email' => 'Failed to authenticate with Google. Please try again.',
             ]);
         }
     }
