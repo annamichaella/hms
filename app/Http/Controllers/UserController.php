@@ -126,6 +126,15 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        // Ensure required fields are present for validation
+        // Use request value if provided and not empty, otherwise fall back to existing user value
+        $request->merge([
+            'fname' => $request->filled('fname') ? $request->input('fname') : $user->fname,
+            'lname' => $request->filled('lname') ? $request->input('lname') : $user->lname,
+            'email' => $request->filled('email') ? $request->input('email') : $user->email,
+            'role' => $request->filled('role') ? $request->input('role') : $user->role,
+        ]);
+
         $request->validate([
             'fname' => 'required|string|max:100',
             'mname' => 'nullable|string|max:200',
@@ -139,10 +148,18 @@ class UserController extends Controller
             'department' => 'nullable|string|max:100',
         ]);
 
-        $data = $request->only([
-            'fname', 'mname', 'lname', 'email', 'role',
-            'phone', 'address', 'specialization', 'department'
-        ]);
+        // Build update data - use request values directly (they're already merged with defaults if needed)
+        $data = [
+            'fname' => $request->input('fname'),
+            'mname' => $request->input('mname', $user->mname ?? ''),
+            'lname' => $request->input('lname'),
+            'email' => $request->input('email'),
+            'role' => $request->input('role'), // This will use the new role from the form
+            'phone' => $request->input('phone', $user->phone ?? ''),
+            'address' => $request->input('address', $user->address ?? ''),
+            'specialization' => $request->input('specialization', $user->specialization ?? ''),
+            'department' => $request->input('department', $user->department ?? ''),
+        ];
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
@@ -154,7 +171,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'User updated successfully',
-                'data' => $user
+                'data' => $user->fresh()
             ]);
         }
 

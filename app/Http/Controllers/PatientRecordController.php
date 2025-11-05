@@ -45,7 +45,8 @@ class PatientRecordController extends Controller
             return view('admin.records.index', compact('records'));
         }
 
-        return view('records.index', compact('records'));
+        // Default to admin view if role not recognized
+        return view('admin.records.index', compact('records'));
     }
 
     /**
@@ -89,7 +90,7 @@ class PatientRecordController extends Controller
         }
 
         $user = Auth::user();
-        $routeName = 'records.index';
+        $routeName = 'admin.records.index';
         if ($user->role === 'admin') {
             $routeName = 'admin.records.index';
         } elseif ($user->role === 'staff') {
@@ -161,7 +162,7 @@ class PatientRecordController extends Controller
         }
 
         $user = Auth::user();
-        $routeName = 'records.index';
+        $routeName = 'admin.records.index';
         if ($user->role === 'admin') {
             $routeName = 'admin.records.index';
         } elseif ($user->role === 'staff') {
@@ -186,7 +187,15 @@ class PatientRecordController extends Controller
             ]);
         }
 
-        return redirect()->route('records.index')
+        $user = Auth::user();
+        $routeName = 'admin.records.index';
+        if ($user->role === 'admin') {
+            $routeName = 'admin.records.index';
+        } elseif ($user->role === 'staff') {
+            $routeName = 'staff.records.index';
+        }
+        
+        return redirect()->route($routeName)
             ->with('success', 'Patient record deleted successfully!');
     }
 

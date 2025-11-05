@@ -45,68 +45,68 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
         Route::post('users', [UserController::class, 'store'])->name('admin.users.store');
-        Route::get('users/{user}', [UserController::class, 'show'])->name('admin.users.show');
-        Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
-        Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
         Route::get('users/stats', [UserController::class, 'getStats'])->name('admin.users.stats');
         // AJAX routes for users
         Route::post('users/get', [UserController::class, 'show'])->name('admin.users.get');
         Route::post('users/search', [UserController::class, 'index'])->name('admin.users.search');
+        Route::get('users/{user}', [UserController::class, 'show'])->name('admin.users.show');
+        Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+        Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
         
         // Appointments routes
         Route::get('appointments', [AppointmentController::class, 'index'])->name('admin.appointments.index');
         Route::get('appointments/create', [AppointmentController::class, 'create'])->name('admin.appointments.create');
         Route::post('appointments', [AppointmentController::class, 'store'])->name('admin.appointments.store');
+        Route::get('appointments/search', [AppointmentController::class, 'search'])->name('admin.appointments.search');
+        Route::post('appointments/search', [AppointmentController::class, 'search'])->name('admin.appointments.search.post');
         Route::get('appointments/{appointment}', [AppointmentController::class, 'show'])->name('admin.appointments.show');
         Route::get('appointments/{appointment}/edit', [AppointmentController::class, 'edit'])->name('admin.appointments.edit');
         Route::put('appointments/{appointment}', [AppointmentController::class, 'update'])->name('admin.appointments.update');
         Route::delete('appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('admin.appointments.destroy');
-        Route::get('appointments/search', [AppointmentController::class, 'search'])->name('admin.appointments.search');
-        Route::post('appointments/search', [AppointmentController::class, 'search'])->name('admin.appointments.search.post');
         
         // Wards routes
         Route::get('wards', [WardController::class, 'index'])->name('admin.wards.index');
         Route::get('wards/create', [WardController::class, 'create'])->name('admin.wards.create');
         Route::post('wards', [WardController::class, 'store'])->name('admin.wards.store');
+        Route::get('wards/stats', [WardController::class, 'getStats'])->name('admin.wards.stats');
+        Route::get('wards/available-beds', [WardController::class, 'getAvailableBeds'])->name('admin.wards.available-beds');
+        Route::post('wards/beds', [WardController::class, 'storeBed'])->name('admin.wards.beds.store');
+        Route::post('wards/assign-patient', [WardController::class, 'assignPatient'])->name('admin.wards.assign-patient');
+        Route::post('wards/discharge-patient', [WardController::class, 'dischargePatient'])->name('admin.wards.discharge-patient');
         Route::get('wards/{ward}', [WardController::class, 'show'])->name('admin.wards.show');
         Route::get('wards/{ward}/edit', [WardController::class, 'edit'])->name('admin.wards.edit');
         Route::put('wards/{ward}', [WardController::class, 'update'])->name('admin.wards.update');
         Route::delete('wards/{ward}', [WardController::class, 'destroy'])->name('admin.wards.destroy');
         Route::get('wards/{ward}/beds', [WardController::class, 'getBeds'])->name('admin.wards.beds');
-        Route::post('wards/beds', [WardController::class, 'storeBed'])->name('admin.wards.beds.store');
         Route::put('wards/beds/{bed}', [WardController::class, 'updateBed'])->name('admin.wards.beds.update');
         Route::delete('wards/beds/{bed}', [WardController::class, 'destroyBed'])->name('admin.wards.beds.destroy');
-        Route::post('wards/assign-patient', [WardController::class, 'assignPatient'])->name('admin.wards.assign-patient');
-        Route::post('wards/discharge-patient', [WardController::class, 'dischargePatient'])->name('admin.wards.discharge-patient');
-        Route::get('wards/stats', [WardController::class, 'getStats'])->name('admin.wards.stats');
-        Route::get('wards/available-beds', [WardController::class, 'getAvailableBeds'])->name('admin.wards.available-beds');
         
         // Billings routes
         Route::get('billings', [BillingController::class, 'index'])->name('admin.billings.index');
         Route::get('billings/create', [BillingController::class, 'create'])->name('admin.billings.create');
         Route::post('billings', [BillingController::class, 'store'])->name('admin.billings.store');
-        Route::get('billings/{billing}', [BillingController::class, 'show'])->name('admin.billings.show');
-        Route::get('billings/{billing}/edit', [BillingController::class, 'edit'])->name('admin.billings.edit');
-        Route::put('billings/{billing}', [BillingController::class, 'update'])->name('admin.billings.update');
-        Route::delete('billings/{billing}', [BillingController::class, 'destroy'])->name('admin.billings.destroy');
         Route::get('billings/search', [BillingController::class, 'search'])->name('admin.billings.search');
         Route::post('billings/search', [BillingController::class, 'search'])->name('admin.billings.search.post');
         Route::get('billings/status/{status}', [BillingController::class, 'getBillsByStatus'])->name('admin.billings.status');
         Route::get('billings/stats', [BillingController::class, 'getStats'])->name('admin.billings.stats');
-        Route::put('billings/{billing}/status', [BillingController::class, 'updateStatus'])->name('admin.billings.update-status');
         Route::post('billings/get', [BillingController::class, 'show'])->name('admin.billings.get');
+        Route::get('billings/{billing}', [BillingController::class, 'show'])->name('admin.billings.show');
+        Route::get('billings/{billing}/edit', [BillingController::class, 'edit'])->name('admin.billings.edit');
+        Route::put('billings/{billing}', [BillingController::class, 'update'])->name('admin.billings.update');
+        Route::put('billings/{billing}/status', [BillingController::class, 'updateStatus'])->name('admin.billings.update-status');
+        Route::delete('billings/{billing}', [BillingController::class, 'destroy'])->name('admin.billings.destroy');
         
         // Records routes
         Route::get('records', [PatientRecordController::class, 'index'])->name('admin.records.index');
         Route::get('records/create', [PatientRecordController::class, 'create'])->name('admin.records.create');
         Route::post('records', [PatientRecordController::class, 'store'])->name('admin.records.store');
+        Route::get('records/search', [PatientRecordController::class, 'search'])->name('admin.records.search');
+        Route::post('records/search', [PatientRecordController::class, 'search'])->name('admin.records.search.post');
+        Route::post('records/get', [PatientRecordController::class, 'show'])->name('admin.records.get');
         Route::get('records/{record}', [PatientRecordController::class, 'show'])->name('admin.records.show');
         Route::get('records/{record}/edit', [PatientRecordController::class, 'edit'])->name('admin.records.edit');
         Route::put('records/{record}', [PatientRecordController::class, 'update'])->name('admin.records.update');
         Route::delete('records/{record}', [PatientRecordController::class, 'destroy'])->name('admin.records.destroy');
-        Route::get('records/search', [PatientRecordController::class, 'search'])->name('admin.records.search');
-        Route::post('records/search', [PatientRecordController::class, 'search'])->name('admin.records.search.post');
-        Route::post('records/get', [PatientRecordController::class, 'show'])->name('admin.records.get');
         Route::post('records/get-patients', function() {
             $patients = \App\Models\User::where('role', 'patient')->orderBy('fname')->get();
             return response()->json(['success' => true, 'data' => $patients]);
