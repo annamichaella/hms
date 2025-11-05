@@ -53,8 +53,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="patient_name" class="block text-sm font-medium text-gray-700 mb-1.5">Patient Name <span class="text-red-500">*</span></label>
-                    <input type="text" name="patient_name" id="patient_name" value="{{ old('patient_name') }}" 
+                    <select name="patient_name" id="patient_name" 
                            class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('patient_name') border-red-500 @enderror" required>
+                        @if(old('patient_name'))
+                            <option value="{{ old('patient_name') }}" selected>{{ old('patient_name') }}</option>
+                        @endif
+                    </select>
                     @error('patient_name')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
@@ -129,5 +133,61 @@
             </div>
         </form>
     </div>
+
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <style>
+        .select2-container--default .select2-selection--single {
+            height: 42px;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 42px;
+            padding-left: 12px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px;
+            right: 10px;
+        }
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #3b82f6;
+        }
+        .select2-dropdown {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+        }
+    </style>
+    
+    <script>
+        $(document).ready(function() {
+            $('#patient_name').select2({
+                placeholder: 'Search for a patient...',
+                allowClear: true,
+                ajax: {
+                    url: '{{ route("staff.billings.patients.search") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.results
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1
+            });
+        });
+    </script>
 @endsection
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Billing;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -337,6 +338,35 @@ class BillingController extends Controller
                 'paid_amount' => $paidAmount,
                 'pending_amount' => $pendingAmount,
             ]
+        ]);
+    }
+
+    /**
+     * Search patients for dropdown.
+     */
+    public function searchPatients(Request $request)
+    {
+        $search = $request->get('q', '');
+        
+        $patients = User::where('role', 'patient')
+            ->where(function($query) use ($search) {
+                $query->where('fname', 'like', "%{$search}%")
+                      ->orWhere('lname', 'like', "%{$search}%")
+                      ->orWhere('mname', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhereRaw("CONCAT(fname, ' ', COALESCE(mname, ''), ' ', lname) LIKE ?", ["%{$search}%"]);
+            })
+            ->limit(50)
+            ->get()
+            ->map(function($user) {
+                return [
+                    'id' => $user->full_name,
+                    'text' => $user->full_name . ' (' . $user->email . ')'
+                ];
+            });
+
+        return response()->json([
+            'results' => $patients
         ]);
     }
 }

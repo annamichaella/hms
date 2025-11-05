@@ -89,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('billings/search', [BillingController::class, 'search'])->name('admin.billings.search.post');
         Route::get('billings/status/{status}', [BillingController::class, 'getBillsByStatus'])->name('admin.billings.status');
         Route::get('billings/stats', [BillingController::class, 'getStats'])->name('admin.billings.stats');
+        Route::get('billings/patients/search', [BillingController::class, 'searchPatients'])->name('admin.billings.patients.search');
         Route::post('billings/get', [BillingController::class, 'show'])->name('admin.billings.get');
         Route::get('billings/{billing}', [BillingController::class, 'show'])->name('admin.billings.show');
         Route::get('billings/{billing}/edit', [BillingController::class, 'edit'])->name('admin.billings.edit');
@@ -181,6 +182,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('billings/{billing}', [BillingController::class, 'update'])->name('staff.billings.update');
         Route::delete('billings/{billing}', [BillingController::class, 'destroy'])->name('staff.billings.destroy');
         Route::get('billings/search', [BillingController::class, 'search'])->name('staff.billings.search');
+        Route::get('billings/patients/search', [BillingController::class, 'searchPatients'])->name('staff.billings.patients.search');
         Route::put('billings/{billing}/status', [BillingController::class, 'updateStatus'])->name('staff.billings.update-status');
         Route::get('billings/stats', [BillingController::class, 'getStats'])->name('staff.billings.stats');
         Route::get('wards', [WardController::class, 'index'])->name('staff.wards.index');
