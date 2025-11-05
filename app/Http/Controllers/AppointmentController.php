@@ -63,6 +63,7 @@ class AppointmentController extends Controller
     public function create()
     {
         $doctors = User::where('role', 'doctor')->orderBy('fname')->get();
+        $patients = User::where('role', 'patient')->orderBy('fname')->get();
         $user = Auth::user();
         
         // If no doctors available, redirect back with error
@@ -74,6 +75,8 @@ class AppointmentController extends Controller
         // Use different views based on role
         if ($user->role === 'patient') {
             return view('patient.appointments.create', compact('doctors'));
+        } elseif ($user->role === 'staff') {
+            return view('staff.appointments.create', compact('doctors', 'patients'));
         }
         
         return view('appointments.create', compact('doctors'));
@@ -88,6 +91,7 @@ class AppointmentController extends Controller
         $isPatient = $user->role === 'patient';
         
         $validator = \Validator::make($request->all(), [
+            'patient_id' => $isPatient ? 'nullable' : 'required|exists:users,id',
             'doctor_id' => [
                 'required',
                 'exists:users,id',
@@ -102,6 +106,8 @@ class AppointmentController extends Controller
             'appointment_time' => 'required',
             'reason' => 'nullable|string|max:500',
         ], [
+            'patient_id.required' => 'Please select a patient.',
+            'patient_id.exists' => 'The selected patient is invalid.',
             'doctor_id.required' => 'Please select a doctor.',
             'doctor_id.exists' => 'The selected doctor is invalid.',
             'appointment_date.required' => 'Please select an appointment date.',
@@ -197,20 +203,56 @@ class AppointmentController extends Controller
     }
 
     /**
+     * Show the form for editing the specified appointment.
+     */
+    public function edit(Appointment $appointment)
+    {
+        $user = Auth::user();
+        $doctors = User::where('role', 'doctor')->orderBy('fname')->get();
+        $patients = User::where('role', 'patient')->orderBy('fname')->get();
+        $appointment->load(['patient', 'doctor']);
+        
+        if ($user->role === 'staff') {
+            return view('staff.appointments.edit', compact('appointment', 'doctors', 'patients'));
+        }
+        
+        return view('appointments.edit', compact('appointment', 'doctors'));
+    }
+
+    /**
      * Update the specified appointment.
      */
     public function update(Request $request, Appointment $appointment)
     {
-        $request->validate([
+        $user = Auth::user();
+        $validationRules = [
             'status' => 'required|in:pending,confirmed,completed,cancelled',
             'appointment_date' => 'sometimes|date',
             'appointment_time' => 'sometimes',
             'reason' => 'nullable|string|max:500',
-        ]);
+        ];
+        
+        if ($user->role === 'staff') {
+            $validationRules['patient_id'] = 'sometimes|exists:users,id';
+            $validationRules['doctor_id'] = 'sometimes|exists:users,id';
+        }
+        
+        $request->validate($validationRules);
 
-        $appointment->update($request->only([
+        $updateData = $request->only([
             'status', 'appointment_date', 'appointment_time', 'reason'
-        ]));
+        ]);
+        
+        if ($user->role === 'staff') {
+            if ($request->has('patient_id')) {
+                $updateData['patient_id'] = $request->patient_id;
+            }
+            if ($request->has('doctor_id')) {
+                $updateData['doctor_id'] = $request->doctor_id;
+            }
+        }
+        
+        $appointment->update($updateData);
 
         if ($request->expectsJson()) {
             return response()->json([

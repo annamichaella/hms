@@ -88,7 +88,7 @@
                 </div>
                 <div>
                     <label for="billing_date" class="block text-sm font-medium text-gray-700 mb-1.5">Billing Date <span class="text-red-500">*</span></label>
-                    <input type="date" name="billing_date" id="billing_date" value="{{ old('billing_date', $billing->billing_date->format('Y-m-d')) }}" 
+                    <input type="date" name="billing_date" id="billing_date" value="{{ old('billing_date', $billing->billing_date ? (\Carbon\Carbon::parse($billing->billing_date)->format('Y-m-d')) : '') }}" 
                            class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('billing_date') border-red-500 @enderror" required>
                     @error('billing_date')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -96,7 +96,7 @@
                 </div>
                 <div>
                     <label for="due_date" class="block text-sm font-medium text-gray-700 mb-1.5">Due Date</label>
-                    <input type="date" name="due_date" id="due_date" value="{{ old('due_date', $billing->due_date ? $billing->due_date->format('Y-m-d') : '') }}" 
+                    <input type="date" name="due_date" id="due_date" value="{{ old('due_date', $billing->due_date ? (\Carbon\Carbon::parse($billing->due_date)->format('Y-m-d')) : '') }}" 
                            class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('due_date') border-red-500 @enderror">
                     @error('due_date')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
