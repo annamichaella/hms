@@ -26,7 +26,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-blue-700 mb-1">Total Bills</p>
-                        <p class="text-2xl font-bold text-gray-800">${{ number_format($totalAmount, 2) }}</p>
+                        <p class="text-2xl font-bold text-gray-800">₱{{ number_format($totalAmount, 2) }}</p>
                         <p class="text-xs text-gray-600 mt-2">{{ $totalBills }} bill(s)</p>
                     </div>
                     <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shadow-md">
@@ -39,7 +39,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-green-700 mb-1">Paid</p>
-                        <p class="text-2xl font-bold text-gray-800">${{ number_format($paidAmount, 2) }}</p>
+                        <p class="text-2xl font-bold text-gray-800">₱{{ number_format($paidAmount, 2) }}</p>
                         <p class="text-xs text-gray-600 mt-2">{{ $paidBills }} bill(s)</p>
                     </div>
                     <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center shadow-md">
@@ -52,7 +52,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-yellow-700 mb-1">Pending</p>
-                        <p class="text-2xl font-bold text-gray-800">${{ number_format($pendingAmount, 2) }}</p>
+                        <p class="text-2xl font-bold text-gray-800">₱{{ number_format($pendingAmount, 2) }}</p>
                         <p class="text-xs text-gray-600 mt-2">{{ $pendingBills }} bill(s)</p>
                     </div>
                     <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center shadow-md">
@@ -106,7 +106,7 @@
                         </div>
                         <div class="flex flex-col items-end space-y-2">
                             <div class="text-right">
-                                <p class="text-2xl font-bold text-gray-800">${{ number_format($bill->amount, 2) }}</p>
+                                <p class="text-2xl font-bold text-gray-800">₱{{ number_format($bill->amount, 2) }}</p>
                                 <p class="text-xs text-gray-500">Total Amount</p>
                             </div>
                             @if($bill->status == 'pending')

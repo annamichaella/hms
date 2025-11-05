@@ -62,7 +62,7 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Amount</label>
-                <p class="text-sm font-semibold text-gray-900">${{ number_format($billing->amount, 2) }}</p>
+                <p class="text-sm font-semibold text-gray-900">₱{{ number_format($billing->amount, 2) }}</p>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Billing Date</label>

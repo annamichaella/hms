@@ -82,7 +82,7 @@
                             {{ $bill->service }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            ${{ number_format($bill->amount, 2) }}
+                            ₱{{ number_format($bill->amount, 2) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {{ $bill->billing_date->format('M d, Y') }}
@@ -141,7 +141,7 @@
                                 ${bill.service || 'N/A'}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                $${parseFloat(bill.amount).toFixed(2)}
+                                ₱${parseFloat(bill.amount).toFixed(2)}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 ${date.toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})}

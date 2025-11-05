@@ -175,7 +175,7 @@
                                     </p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-semibold text-gray-900">${{ number_format($bill->amount, 2) }}</p>
+                                    <p class="font-semibold text-gray-900">₱{{ number_format($bill->amount, 2) }}</p>
                                     <span class="px-2 py-1 text-xs font-medium rounded-full
                                         @if($bill->status == 'paid') bg-green-100 text-green-800
                                         @elseif($bill->status == 'pending') bg-yellow-100 text-yellow-800
