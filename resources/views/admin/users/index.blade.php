@@ -109,10 +109,15 @@
                                    class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-700 mb-1">Last Name *</label>
-                            <input type="text" id="lname" name="lname" required 
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Middle Name</label>
+                            <input type="text" id="mname" name="mname" 
                                    class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Last Name *</label>
+                        <input type="text" id="lname" name="lname" required 
+                               class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
@@ -123,6 +128,7 @@
                         <div>
                             <label class="block text-xs font-medium text-gray-700 mb-1">Password <span id="pwd-required">*</span></label>
                             <input type="password" id="password" name="password" minlength="6"
+                                   placeholder="Minimum 6 characters"
                                    class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
@@ -149,6 +155,20 @@
                         <label class="block text-xs font-medium text-gray-700 mb-1">Address</label>
                         <textarea id="address" name="address" rows="2" 
                                   class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="role-specific-fields" style="display: none;">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Specialization</label>
+                            <input type="text" id="specialization" name="specialization" 
+                                   class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="For doctors">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Department</label>
+                            <input type="text" id="department" name="department" 
+                                   class="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="For doctors/nurses">
+                        </div>
                     </div>
                 </div>
                 <div class="flex justify-end space-x-2.5 pt-3 mt-3 border-t border-gray-100 md:static sticky bottom-0 bg-white">
@@ -257,8 +277,27 @@
             form.reset();
             document.getElementById('user-id').value = '';
             document.getElementById('pwd-required').style.display = 'inline';
-            document.getElementById('password').required = true;
+            const passwordField = document.getElementById('password');
+            passwordField.required = true;
+            passwordField.removeAttribute('readonly');
+            passwordField.removeAttribute('placeholder');
+            passwordField.setAttribute('placeholder', 'Minimum 6 characters');
+            document.getElementById('role-specific-fields').style.display = 'none';
+            document.getElementById('specialization').value = '';
+            document.getElementById('department').value = '';
             modal.classList.remove('hidden');
+        });
+        
+        // Show/hide role-specific fields based on role selection
+        document.getElementById('role').addEventListener('change', function() {
+            const roleSpecificFields = document.getElementById('role-specific-fields');
+            if (this.value === 'doctor' || this.value === 'nurse') {
+                roleSpecificFields.style.display = 'grid';
+            } else {
+                roleSpecificFields.style.display = 'none';
+                document.getElementById('specialization').value = '';
+                document.getElementById('department').value = '';
+            }
         });
 
         function closeModal() {
@@ -276,13 +315,29 @@
                     modalTitle.textContent = 'Edit User';
                     document.getElementById('user-id').value = user.id;
                     document.getElementById('fname').value = user.fname;
+                    document.getElementById('mname').value = user.mname || '';
                     document.getElementById('lname').value = user.lname;
                     document.getElementById('email').value = user.email;
                     document.getElementById('role').value = user.role;
                     document.getElementById('phone').value = user.phone || '';
                     document.getElementById('address').value = user.address || '';
+                    document.getElementById('specialization').value = user.specialization || '';
+                    document.getElementById('department').value = user.department || '';
                     document.getElementById('pwd-required').style.display = 'none';
-                    document.getElementById('password').required = false;
+                    const passwordField = document.getElementById('password');
+                    passwordField.required = false;
+                    passwordField.value = '';
+                    passwordField.setAttribute('readonly', 'readonly');
+                    passwordField.setAttribute('placeholder', 'Leave blank to keep current password');
+                    
+                    // Show/hide role-specific fields
+                    const roleSpecificFields = document.getElementById('role-specific-fields');
+                    if (user.role === 'doctor' || user.role === 'nurse') {
+                        roleSpecificFields.style.display = 'grid';
+                    } else {
+                        roleSpecificFields.style.display = 'none';
+                    }
+                    
                     modal.classList.remove('hidden');
                 }
             });
@@ -318,6 +373,11 @@
             const id = document.getElementById('user-id').value;
             const url = id ? `/admin/users/${id}` : '/admin/users';
             const method = id ? 'PUT' : 'POST';
+            
+            // Remove password from formData if it's empty (for edit)
+            if (id && !formData.get('password')) {
+                formData.delete('password');
+            }
 
             fetch(url, {
                 method: method,

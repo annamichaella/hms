@@ -214,31 +214,67 @@ document.addEventListener('click', function(e) {
 
 // Load available beds for dropdown
 function loadAvailableBeds() {
+    const select = document.getElementById('bedSelect');
+    if (!select) return;
+    
     fetch('{{ route("nurse.ward-assignments.available-beds") }}')
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Failed to fetch available beds');
+            }
+            return res.json();
+        })
         .then(data => {
             if (data.success) {
-                const select = document.getElementById('bedSelect');
                 select.innerHTML = '<option value="">Select Available Bed</option>';
-                data.data.forEach(bed => {
-                    select.innerHTML += `<option value="${bed.id}">${bed.ward_name} - Bed ${bed.bed_number} (${bed.bed_type})</option>`;
-                });
+                if (data.data && data.data.length > 0) {
+                    data.data.forEach(bed => {
+                        select.innerHTML += `<option value="${bed.id}">${bed.ward_name} - Bed ${bed.bed_number} (${bed.bed_type})</option>`;
+                    });
+                } else {
+                    select.innerHTML += '<option value="" disabled>No available beds</option>';
+                }
+            } else {
+                select.innerHTML = '<option value="" disabled>Error loading beds</option>';
+                console.error('Error loading beds:', data.error || 'Unknown error');
             }
+        })
+        .catch(error => {
+            console.error('Error fetching available beds:', error);
+            select.innerHTML = '<option value="" disabled>Error loading beds. Please try again.</option>';
         });
 }
 
 // Load patients for dropdown
 function loadPatients() {
+    const select = document.getElementById('patientSelect');
+    if (!select) return;
+    
     fetch('{{ route("nurse.ward-assignments.patients") }}')
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Failed to fetch patients');
+            }
+            return res.json();
+        })
         .then(data => {
             if (data.success) {
-                const select = document.getElementById('patientSelect');
                 select.innerHTML = '<option value="">Select Patient</option>';
-                data.data.forEach(patient => {
-                    select.innerHTML += `<option value="${patient.id}">${patient.fname} ${patient.lname}</option>`;
-                });
+                if (data.data && data.data.length > 0) {
+                    data.data.forEach(patient => {
+                        select.innerHTML += `<option value="${patient.id}">${patient.fname} ${patient.lname}</option>`;
+                    });
+                } else {
+                    select.innerHTML += '<option value="" disabled>No patients available</option>';
+                }
+            } else {
+                select.innerHTML = '<option value="" disabled>Error loading patients</option>';
+                console.error('Error loading patients:', data.error || 'Unknown error');
             }
+        })
+        .catch(error => {
+            console.error('Error fetching patients:', error);
+            select.innerHTML = '<option value="" disabled>Error loading patients. Please try again.</option>';
         });
 }
 
